@@ -299,7 +299,7 @@ function compare(param, param$1) {
 
 function height(param) {
   if (param) {
-    return param.h;
+    return param[/* h */4];
   } else {
     return 0;
   }
@@ -318,18 +318,18 @@ function create(l, x, d, r) {
 }
 
 function bal(l, x, d, r) {
-  var hl = l ? l.h : 0;
-  var hr = r ? r.h : 0;
+  var hl = l ? l[/* h */4] : 0;
+  var hr = r ? r[/* h */4] : 0;
   if (hl > (hr + 2 | 0)) {
     if (l) {
-      var lr = l.r;
-      var ld = l.d;
-      var lv = l.v;
-      var ll = l.l;
+      var lr = l[/* r */3];
+      var ld = l[/* d */2];
+      var lv = l[/* v */1];
+      var ll = l[/* l */0];
       if (height(ll) >= height(lr)) {
         return create(ll, lv, ld, create(lr, x, d, r));
       } else if (lr) {
-        return create(create(ll, lv, ld, lr.l), lr.v, lr.d, create(lr.r, x, d, r));
+        return create(create(ll, lv, ld, lr[/* l */0]), lr[/* v */1], lr[/* d */2], create(lr[/* r */3], x, d, r));
       } else {
         throw [
               Caml_builtin_exceptions.invalid_argument,
@@ -344,14 +344,14 @@ function bal(l, x, d, r) {
     }
   } else if (hr > (hl + 2 | 0)) {
     if (r) {
-      var rr = r.r;
-      var rd = r.d;
-      var rv = r.v;
-      var rl = r.l;
+      var rr = r[/* r */3];
+      var rd = r[/* d */2];
+      var rv = r[/* v */1];
+      var rl = r[/* l */0];
       if (height(rr) >= height(rl)) {
         return create(create(l, x, d, rl), rv, rd, rr);
       } else if (rl) {
-        return create(create(l, x, d, rl.l), rl.v, rl.d, create(rl.r, rv, rd, rr));
+        return create(create(l, x, d, rl[/* l */0]), rl[/* v */1], rl[/* d */2], create(rl[/* r */3], rv, rd, rr));
       } else {
         throw [
               Caml_builtin_exceptions.invalid_argument,
@@ -377,10 +377,10 @@ function bal(l, x, d, r) {
 
 function add(x, data, m) {
   if (m) {
-    var r = m.r;
-    var d = m.d;
-    var v = m.v;
-    var l = m.l;
+    var r = m[/* r */3];
+    var d = m[/* d */2];
+    var v = m[/* v */1];
+    var l = m[/* l */0];
     var c = compare(x, v);
     if (c === 0) {
       if (d === data) {
@@ -391,7 +391,7 @@ function add(x, data, m) {
                 /* v */x,
                 /* d */data,
                 /* r */r,
-                /* h */m.h
+                /* h */m[/* h */4]
               ];
       }
     } else if (c < 0) {
@@ -487,15 +487,15 @@ function from_char(param) {
 
 function height$1(param) {
   if (param) {
-    return param.h;
+    return param[/* h */3];
   } else {
     return 0;
   }
 }
 
 function create$1(l, v, r) {
-  var hl = l ? l.h : 0;
-  var hr = r ? r.h : 0;
+  var hl = l ? l[/* h */3] : 0;
+  var hr = r ? r[/* h */3] : 0;
   return /* Node */[
           /* l */l,
           /* v */v,
@@ -505,17 +505,17 @@ function create$1(l, v, r) {
 }
 
 function bal$1(l, v, r) {
-  var hl = l ? l.h : 0;
-  var hr = r ? r.h : 0;
+  var hl = l ? l[/* h */3] : 0;
+  var hr = r ? r[/* h */3] : 0;
   if (hl > (hr + 2 | 0)) {
     if (l) {
-      var lr = l.r;
-      var lv = l.v;
-      var ll = l.l;
+      var lr = l[/* r */2];
+      var lv = l[/* v */1];
+      var ll = l[/* l */0];
       if (height$1(ll) >= height$1(lr)) {
         return create$1(ll, lv, create$1(lr, v, r));
       } else if (lr) {
-        return create$1(create$1(ll, lv, lr.l), lr.v, create$1(lr.r, v, r));
+        return create$1(create$1(ll, lv, lr[/* l */0]), lr[/* v */1], create$1(lr[/* r */2], v, r));
       } else {
         throw [
               Caml_builtin_exceptions.invalid_argument,
@@ -530,13 +530,13 @@ function bal$1(l, v, r) {
     }
   } else if (hr > (hl + 2 | 0)) {
     if (r) {
-      var rr = r.r;
-      var rv = r.v;
-      var rl = r.l;
+      var rr = r[/* r */2];
+      var rv = r[/* v */1];
+      var rl = r[/* l */0];
       if (height$1(rr) >= height$1(rl)) {
         return create$1(create$1(l, v, rl), rv, rr);
       } else if (rl) {
-        return create$1(create$1(l, v, rl.l), rl.v, create$1(rl.r, rv, rr));
+        return create$1(create$1(l, v, rl[/* l */0]), rl[/* v */1], create$1(rl[/* r */2], rv, rr));
       } else {
         throw [
               Caml_builtin_exceptions.invalid_argument,
@@ -561,9 +561,9 @@ function bal$1(l, v, r) {
 
 function add$1(x, t) {
   if (t) {
-    var r = t.r;
-    var v = t.v;
-    var l = t.l;
+    var r = t[/* r */2];
+    var v = t[/* v */1];
+    var l = t[/* l */0];
     var c = Caml_primitive.caml_int_compare(x, v);
     if (c === 0) {
       return t;
@@ -1690,11 +1690,11 @@ function trans_set(cache, cm, s) {
       while(true) {
         var param = _param;
         if (param) {
-          var c = compare(x, param.v);
+          var c = compare(x, param[/* v */1]);
           if (c === 0) {
-            return param.d;
+            return param[/* d */2];
           } else {
-            _param = c < 0 ? param.l : param.r;
+            _param = c < 0 ? param[/* l */0] : param[/* r */3];
             continue ;
           }
         } else {

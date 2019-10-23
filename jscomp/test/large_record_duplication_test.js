@@ -52,7 +52,7 @@ var v1 = /* A0 */[
 
 function get_x0(x) {
   if (x) {
-    return x.x0;
+    return x[/* x0 */0];
   }
   
 }
@@ -60,7 +60,7 @@ function get_x0(x) {
 function f1(x) {
   if (x) {
     var newrecord = Caml_obj.caml_obj_dup(x);
-    newrecord.x0 = 1;
+    newrecord[0] = 1;
     return newrecord;
   } else {
     return /* A1 */0;
@@ -99,7 +99,7 @@ function get_x0$1(x) {
   if (x.tag) {
     return ;
   } else {
-    return x.x0;
+    return x[/* x0 */0];
   }
 }
 
@@ -108,7 +108,7 @@ function f2(x) {
     return x;
   } else {
     var newrecord = Caml_obj.caml_obj_dup(x);
-    newrecord.x0 = 1;
+    newrecord[0] = 1;
     return newrecord;
   }
 }
@@ -120,7 +120,7 @@ var A0 = Caml_exceptions.create("Large_record_duplication_test.A0");
 function f3(x) {
   if (x[0] === A0) {
     var newrecord = Caml_obj.caml_obj_dup(x);
-    newrecord.x0 = 1;
+    newrecord[1] = 1;
     return newrecord;
   } else {
     return x;
@@ -129,7 +129,7 @@ function f3(x) {
 
 function get_x0$2(x) {
   if (x[0] === A0) {
-    return x.x0;
+    return x[/* x0 */1];
   }
   
 }

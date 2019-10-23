@@ -3444,7 +3444,7 @@ var Codegen_pp = {
 
 function height(param) {
   if (param) {
-    return param.h;
+    return param[/* h */4];
   } else {
     return 0;
   }
@@ -3463,18 +3463,18 @@ function create(l, x, d, r) {
 }
 
 function bal(l, x, d, r) {
-  var hl = l ? l.h : 0;
-  var hr = r ? r.h : 0;
+  var hl = l ? l[/* h */4] : 0;
+  var hr = r ? r[/* h */4] : 0;
   if (hl > (hr + 2 | 0)) {
     if (l) {
-      var lr = l.r;
-      var ld = l.d;
-      var lv = l.v;
-      var ll = l.l;
+      var lr = l[/* r */3];
+      var ld = l[/* d */2];
+      var lv = l[/* v */1];
+      var ll = l[/* l */0];
       if (height(ll) >= height(lr)) {
         return create(ll, lv, ld, create(lr, x, d, r));
       } else if (lr) {
-        return create(create(ll, lv, ld, lr.l), lr.v, lr.d, create(lr.r, x, d, r));
+        return create(create(ll, lv, ld, lr[/* l */0]), lr[/* v */1], lr[/* d */2], create(lr[/* r */3], x, d, r));
       } else {
         throw [
               Caml_builtin_exceptions.invalid_argument,
@@ -3489,14 +3489,14 @@ function bal(l, x, d, r) {
     }
   } else if (hr > (hl + 2 | 0)) {
     if (r) {
-      var rr = r.r;
-      var rd = r.d;
-      var rv = r.v;
-      var rl = r.l;
+      var rr = r[/* r */3];
+      var rd = r[/* d */2];
+      var rv = r[/* v */1];
+      var rl = r[/* l */0];
       if (height(rr) >= height(rl)) {
         return create(create(l, x, d, rl), rv, rd, rr);
       } else if (rl) {
-        return create(create(l, x, d, rl.l), rl.v, rl.d, create(rl.r, rv, rd, rr));
+        return create(create(l, x, d, rl[/* l */0]), rl[/* v */1], rl[/* d */2], create(rl[/* r */3], rv, rd, rr));
       } else {
         throw [
               Caml_builtin_exceptions.invalid_argument,
@@ -3522,10 +3522,10 @@ function bal(l, x, d, r) {
 
 function add(x, data, m) {
   if (m) {
-    var r = m.r;
-    var d = m.d;
-    var v = m.v;
-    var l = m.l;
+    var r = m[/* r */3];
+    var d = m[/* d */2];
+    var v = m[/* v */1];
+    var l = m[/* l */0];
     var c = Caml_obj.caml_compare(x, v);
     if (c === 0) {
       if (d === data) {
@@ -3536,7 +3536,7 @@ function add(x, data, m) {
                 /* v */x,
                 /* d */data,
                 /* r */r,
-                /* h */m.h
+                /* h */m[/* h */4]
               ];
       }
     } else if (c < 0) {
@@ -3569,11 +3569,11 @@ function find(x, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      var c = Caml_obj.caml_compare(x, param.v);
+      var c = Caml_obj.caml_compare(x, param[/* v */1]);
       if (c === 0) {
-        return param.d;
+        return param[/* d */2];
       } else {
-        _param = c < 0 ? param.l : param.r;
+        _param = c < 0 ? param[/* l */0] : param[/* r */3];
         continue ;
       }
     } else {
@@ -3584,15 +3584,15 @@ function find(x, _param) {
 
 function map$1(f, param) {
   if (param) {
-    var l$prime = map$1(f, param.l);
-    var d$prime = Curry._1(f, param.d);
-    var r$prime = map$1(f, param.r);
+    var l$prime = map$1(f, param[/* l */0]);
+    var d$prime = Curry._1(f, param[/* d */2]);
+    var r$prime = map$1(f, param[/* r */3]);
     return /* Node */[
             /* l */l$prime,
-            /* v */param.v,
+            /* v */param[/* v */1],
             /* d */d$prime,
             /* r */r$prime,
-            /* h */param.h
+            /* h */param[/* h */4]
           ];
   } else {
     return /* Empty */0;
@@ -3604,8 +3604,8 @@ function fold(f, _m, _accu) {
     var accu = _accu;
     var m = _m;
     if (m) {
-      _accu = Curry._3(f, m.v, m.d, fold(f, m.l, accu));
-      _m = m.r;
+      _accu = Curry._3(f, m[/* v */1], m[/* d */2], fold(f, m[/* l */0], accu));
+      _m = m[/* r */3];
       continue ;
     } else {
       return accu;

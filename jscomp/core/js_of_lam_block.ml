@@ -55,7 +55,8 @@ let field (field_info : Lam_compat.field_dbg_info) e i =
     E.array_index_by_int (* ~comment *) e i 
 #if OCAML_VERSION =~ ">4.03.0" then 
   | Fld_record_inline comment
-  | Fld_record_extension comment
+  | Fld_record_extension comment ->
+    E.array_index_by_int ~comment e i
 #end
   | Fld_record comment ->
     E.dot e comment
@@ -73,7 +74,8 @@ let set_field (field_info : Lam_compat.set_field_dbg_info) e i e0 =
       -> None
 #if OCAML_VERSION =~ ">4.03.0" then
     | Fld_record_inline_set s
-    | Fld_record_extension_set s
+    | Fld_record_extension_set s ->
+      None
 #end    
     | Fld_record_set s -> Some (s)
   in (* see GPR#631*)

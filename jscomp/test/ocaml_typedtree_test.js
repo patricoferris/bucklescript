@@ -2796,7 +2796,7 @@ function equal$1(t1, t2) {
 
 function height(param) {
   if (param) {
-    return param.h;
+    return param[/* h */4];
   } else {
     return 0;
   }
@@ -2815,18 +2815,18 @@ function create$1(l, x, d, r) {
 }
 
 function bal(l, x, d, r) {
-  var hl = l ? l.h : 0;
-  var hr = r ? r.h : 0;
+  var hl = l ? l[/* h */4] : 0;
+  var hr = r ? r[/* h */4] : 0;
   if (hl > (hr + 2 | 0)) {
     if (l) {
-      var lr = l.r;
-      var ld = l.d;
-      var lv = l.v;
-      var ll = l.l;
+      var lr = l[/* r */3];
+      var ld = l[/* d */2];
+      var lv = l[/* v */1];
+      var ll = l[/* l */0];
       if (height(ll) >= height(lr)) {
         return create$1(ll, lv, ld, create$1(lr, x, d, r));
       } else if (lr) {
-        return create$1(create$1(ll, lv, ld, lr.l), lr.v, lr.d, create$1(lr.r, x, d, r));
+        return create$1(create$1(ll, lv, ld, lr[/* l */0]), lr[/* v */1], lr[/* d */2], create$1(lr[/* r */3], x, d, r));
       } else {
         throw [
               Caml_builtin_exceptions.invalid_argument,
@@ -2841,14 +2841,14 @@ function bal(l, x, d, r) {
     }
   } else if (hr > (hl + 2 | 0)) {
     if (r) {
-      var rr = r.r;
-      var rd = r.d;
-      var rv = r.v;
-      var rl = r.l;
+      var rr = r[/* r */3];
+      var rd = r[/* d */2];
+      var rv = r[/* v */1];
+      var rl = r[/* l */0];
       if (height(rr) >= height(rl)) {
         return create$1(create$1(l, x, d, rl), rv, rd, rr);
       } else if (rl) {
-        return create$1(create$1(l, x, d, rl.l), rl.v, rl.d, create$1(rl.r, rv, rd, rr));
+        return create$1(create$1(l, x, d, rl[/* l */0]), rl[/* v */1], rl[/* d */2], create$1(rl[/* r */3], rv, rd, rr));
       } else {
         throw [
               Caml_builtin_exceptions.invalid_argument,
@@ -2874,10 +2874,10 @@ function bal(l, x, d, r) {
 
 function add$1(x, data, m) {
   if (m) {
-    var r = m.r;
-    var d = m.d;
-    var v = m.v;
-    var l = m.l;
+    var r = m[/* r */3];
+    var d = m[/* d */2];
+    var v = m[/* v */1];
+    var l = m[/* l */0];
     var c = Caml_primitive.caml_string_compare(x, v);
     if (c === 0) {
       if (d === data) {
@@ -2888,7 +2888,7 @@ function add$1(x, data, m) {
                 /* v */x,
                 /* d */data,
                 /* r */r,
-                /* h */m.h
+                /* h */m[/* h */4]
               ];
       }
     } else if (c < 0) {
@@ -2921,11 +2921,11 @@ function find(x, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      var c = Caml_primitive.caml_string_compare(x, param.v);
+      var c = Caml_primitive.caml_string_compare(x, param[/* v */1]);
       if (c === 0) {
-        return param.d;
+        return param[/* d */2];
       } else {
-        _param = c < 0 ? param.l : param.r;
+        _param = c < 0 ? param[/* l */0] : param[/* r */3];
         continue ;
       }
     } else {
@@ -2938,11 +2938,11 @@ function mem(x, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      var c = Caml_primitive.caml_string_compare(x, param.v);
+      var c = Caml_primitive.caml_string_compare(x, param[/* v */1]);
       if (c === 0) {
         return true;
       } else {
-        _param = c < 0 ? param.l : param.r;
+        _param = c < 0 ? param[/* l */0] : param[/* r */3];
         continue ;
       }
     } else {
@@ -2955,9 +2955,9 @@ function iter$1(f, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      iter$1(f, param.l);
-      Curry._2(f, param.v, param.d);
-      _param = param.r;
+      iter$1(f, param[/* l */0]);
+      Curry._2(f, param[/* v */1], param[/* d */2]);
+      _param = param[/* r */3];
       continue ;
     } else {
       return /* () */0;
@@ -2967,15 +2967,15 @@ function iter$1(f, _param) {
 
 function map(f, param) {
   if (param) {
-    var l$prime = map(f, param.l);
-    var d$prime = Curry._1(f, param.d);
-    var r$prime = map(f, param.r);
+    var l$prime = map(f, param[/* l */0]);
+    var d$prime = Curry._1(f, param[/* d */2]);
+    var r$prime = map(f, param[/* r */3]);
     return /* Node */[
             /* l */l$prime,
-            /* v */param.v,
+            /* v */param[/* v */1],
             /* d */d$prime,
             /* r */r$prime,
-            /* h */param.h
+            /* h */param[/* h */4]
           ];
   } else {
     return /* Empty */0;
@@ -2987,8 +2987,8 @@ function fold(f, _m, _accu) {
     var accu = _accu;
     var m = _m;
     if (m) {
-      _accu = Curry._3(f, m.v, m.d, fold(f, m.l, accu));
-      _m = m.r;
+      _accu = Curry._3(f, m[/* v */1], m[/* d */2], fold(f, m[/* l */0], accu));
+      _m = m[/* r */3];
       continue ;
     } else {
       return accu;
@@ -3070,15 +3070,15 @@ function get_lower(v) {
 
 function height$1(param) {
   if (param) {
-    return param.h;
+    return param[/* h */3];
   } else {
     return 0;
   }
 }
 
 function create$2(l, v, r) {
-  var hl = l ? l.h : 0;
-  var hr = r ? r.h : 0;
+  var hl = l ? l[/* h */3] : 0;
+  var hr = r ? r[/* h */3] : 0;
   return /* Node */[
           /* l */l,
           /* v */v,
@@ -3088,17 +3088,17 @@ function create$2(l, v, r) {
 }
 
 function bal$1(l, v, r) {
-  var hl = l ? l.h : 0;
-  var hr = r ? r.h : 0;
+  var hl = l ? l[/* h */3] : 0;
+  var hr = r ? r[/* h */3] : 0;
   if (hl > (hr + 2 | 0)) {
     if (l) {
-      var lr = l.r;
-      var lv = l.v;
-      var ll = l.l;
+      var lr = l[/* r */2];
+      var lv = l[/* v */1];
+      var ll = l[/* l */0];
       if (height$1(ll) >= height$1(lr)) {
         return create$2(ll, lv, create$2(lr, v, r));
       } else if (lr) {
-        return create$2(create$2(ll, lv, lr.l), lr.v, create$2(lr.r, v, r));
+        return create$2(create$2(ll, lv, lr[/* l */0]), lr[/* v */1], create$2(lr[/* r */2], v, r));
       } else {
         throw [
               Caml_builtin_exceptions.invalid_argument,
@@ -3113,13 +3113,13 @@ function bal$1(l, v, r) {
     }
   } else if (hr > (hl + 2 | 0)) {
     if (r) {
-      var rr = r.r;
-      var rv = r.v;
-      var rl = r.l;
+      var rr = r[/* r */2];
+      var rv = r[/* v */1];
+      var rl = r[/* l */0];
       if (height$1(rr) >= height$1(rl)) {
         return create$2(create$2(l, v, rl), rv, rr);
       } else if (rl) {
-        return create$2(create$2(l, v, rl.l), rl.v, create$2(rl.r, rv, rr));
+        return create$2(create$2(l, v, rl[/* l */0]), rl[/* v */1], create$2(rl[/* r */2], rv, rr));
       } else {
         throw [
               Caml_builtin_exceptions.invalid_argument,
@@ -3144,9 +3144,9 @@ function bal$1(l, v, r) {
 
 function add$2(x, t) {
   if (t) {
-    var r = t.r;
-    var v = t.v;
-    var l = t.l;
+    var r = t[/* r */2];
+    var v = t[/* v */1];
+    var l = t[/* l */0];
     var c = Caml_primitive.caml_string_compare(x, v);
     if (c === 0) {
       return t;
@@ -3186,7 +3186,7 @@ function singleton(x) {
 
 function add_min_element(x, param) {
   if (param) {
-    return bal$1(add_min_element(x, param.l), param.v, param.r);
+    return bal$1(add_min_element(x, param[/* l */0]), param[/* v */1], param[/* r */2]);
   } else {
     return singleton(x);
   }
@@ -3194,7 +3194,7 @@ function add_min_element(x, param) {
 
 function add_max_element(x, param) {
   if (param) {
-    return bal$1(param.l, param.v, add_max_element(x, param.r));
+    return bal$1(param[/* l */0], param[/* v */1], add_max_element(x, param[/* r */2]));
   } else {
     return singleton(x);
   }
@@ -3203,12 +3203,12 @@ function add_max_element(x, param) {
 function join(l, v, r) {
   if (l) {
     if (r) {
-      var rh = r.h;
-      var lh = l.h;
+      var rh = r[/* h */3];
+      var lh = l[/* h */3];
       if (lh > (rh + 2 | 0)) {
-        return bal$1(l.l, l.v, join(l.r, v, r));
+        return bal$1(l[/* l */0], l[/* v */1], join(l[/* r */2], v, r));
       } else if (rh > (lh + 2 | 0)) {
-        return bal$1(join(l, v, r.l), r.v, r.r);
+        return bal$1(join(l, v, r[/* l */0]), r[/* v */1], r[/* r */2]);
       } else {
         return create$2(l, v, r);
       }
@@ -3224,12 +3224,12 @@ function min_elt(_param) {
   while(true) {
     var param = _param;
     if (param) {
-      var l = param.l;
+      var l = param[/* l */0];
       if (l) {
         _param = l;
         continue ;
       } else {
-        return param.v;
+        return param[/* v */1];
       }
     } else {
       throw Caml_builtin_exceptions.not_found;
@@ -3239,11 +3239,11 @@ function min_elt(_param) {
 
 function remove_min_elt(param) {
   if (param) {
-    var l = param.l;
+    var l = param[/* l */0];
     if (l) {
-      return bal$1(remove_min_elt(l), param.v, param.r);
+      return bal$1(remove_min_elt(l), param[/* v */1], param[/* r */2]);
     } else {
-      return param.r;
+      return param[/* r */2];
     }
   } else {
     throw [
@@ -3267,9 +3267,9 @@ function concat(t1, t2) {
 
 function split(x, param) {
   if (param) {
-    var r = param.r;
-    var v = param.v;
-    var l = param.l;
+    var r = param[/* r */2];
+    var v = param[/* v */1];
+    var l = param[/* l */0];
     var c = Caml_primitive.caml_string_compare(x, v);
     if (c === 0) {
       return /* tuple */[
@@ -3305,11 +3305,11 @@ function mem$2(x, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      var c = Caml_primitive.caml_string_compare(x, param.v);
+      var c = Caml_primitive.caml_string_compare(x, param[/* v */1]);
       if (c === 0) {
         return true;
       } else {
-        _param = c < 0 ? param.l : param.r;
+        _param = c < 0 ? param[/* l */0] : param[/* r */2];
         continue ;
       }
     } else {
@@ -3321,22 +3321,22 @@ function mem$2(x, _param) {
 function union$1(s1, s2) {
   if (s1) {
     if (s2) {
-      var h2 = s2.h;
-      var v2 = s2.v;
-      var h1 = s1.h;
-      var v1 = s1.v;
+      var h2 = s2[/* h */3];
+      var v2 = s2[/* v */1];
+      var h1 = s1[/* h */3];
+      var v1 = s1[/* v */1];
       if (h1 >= h2) {
         if (h2 === 1) {
           return add$2(v2, s1);
         } else {
           var match = split(v1, s2);
-          return join(union$1(s1.l, match[0]), v1, union$1(s1.r, match[2]));
+          return join(union$1(s1[/* l */0], match[0]), v1, union$1(s1[/* r */2], match[2]));
         }
       } else if (h1 === 1) {
         return add$2(v1, s2);
       } else {
         var match$1 = split(v2, s1);
-        return join(union$1(match$1[0], s2.l), v2, union$1(match$1[2], s2.r));
+        return join(union$1(match$1[0], s2[/* l */0]), v2, union$1(match$1[2], s2[/* r */2]));
       }
     } else {
       return s1;
@@ -3348,9 +3348,9 @@ function union$1(s1, s2) {
 
 function inter$1(s1, s2) {
   if (s1 && s2) {
-    var r1 = s1.r;
-    var v1 = s1.v;
-    var l1 = s1.l;
+    var r1 = s1[/* r */2];
+    var v1 = s1[/* v */1];
+    var l1 = s1[/* l */0];
     var match = split(v1, s2);
     var l2 = match[0];
     if (match[1]) {
@@ -3366,9 +3366,9 @@ function inter$1(s1, s2) {
 function diff(s1, s2) {
   if (s1) {
     if (s2) {
-      var r1 = s1.r;
-      var v1 = s1.v;
-      var l1 = s1.l;
+      var r1 = s1[/* r */2];
+      var v1 = s1[/* v */1];
+      var l1 = s1[/* l */0];
       var match = split(v1, s2);
       var l2 = match[0];
       if (match[1]) {
@@ -3390,11 +3390,11 @@ function cons_enum(_s, _e) {
     var s = _s;
     if (s) {
       _e = /* More */[
-        s.v,
-        s.r,
+        s[/* v */1],
+        s[/* r */2],
         e
       ];
-      _s = s.l;
+      _s = s[/* l */0];
       continue ;
     } else {
       return e;
@@ -3438,8 +3438,8 @@ function fold$1(f, _s, _accu) {
     var accu = _accu;
     var s = _s;
     if (s) {
-      _accu = Curry._2(f, s.v, fold$1(f, s.l, accu));
-      _s = s.r;
+      _accu = Curry._2(f, s[/* v */1], fold$1(f, s[/* l */0], accu));
+      _s = s[/* r */2];
       continue ;
     } else {
       return accu;
@@ -3452,10 +3452,10 @@ function elements_aux(_accu, _param) {
     var param = _param;
     var accu = _accu;
     if (param) {
-      _param = param.l;
+      _param = param[/* l */0];
       _accu = /* :: */[
-        param.v,
-        elements_aux(accu, param.r)
+        param[/* v */1],
+        elements_aux(accu, param[/* r */2])
       ];
       continue ;
     } else {
@@ -3530,15 +3530,15 @@ var funarg = {
 
 function height$2(param) {
   if (param) {
-    return param.h;
+    return param[/* h */3];
   } else {
     return 0;
   }
 }
 
 function create$3(l, v, r) {
-  var hl = l ? l.h : 0;
-  var hr = r ? r.h : 0;
+  var hl = l ? l[/* h */3] : 0;
+  var hr = r ? r[/* h */3] : 0;
   return /* Node */[
           /* l */l,
           /* v */v,
@@ -3548,17 +3548,17 @@ function create$3(l, v, r) {
 }
 
 function bal$2(l, v, r) {
-  var hl = l ? l.h : 0;
-  var hr = r ? r.h : 0;
+  var hl = l ? l[/* h */3] : 0;
+  var hr = r ? r[/* h */3] : 0;
   if (hl > (hr + 2 | 0)) {
     if (l) {
-      var lr = l.r;
-      var lv = l.v;
-      var ll = l.l;
+      var lr = l[/* r */2];
+      var lv = l[/* v */1];
+      var ll = l[/* l */0];
       if (height$2(ll) >= height$2(lr)) {
         return create$3(ll, lv, create$3(lr, v, r));
       } else if (lr) {
-        return create$3(create$3(ll, lv, lr.l), lr.v, create$3(lr.r, v, r));
+        return create$3(create$3(ll, lv, lr[/* l */0]), lr[/* v */1], create$3(lr[/* r */2], v, r));
       } else {
         throw [
               Caml_builtin_exceptions.invalid_argument,
@@ -3573,13 +3573,13 @@ function bal$2(l, v, r) {
     }
   } else if (hr > (hl + 2 | 0)) {
     if (r) {
-      var rr = r.r;
-      var rv = r.v;
-      var rl = r.l;
+      var rr = r[/* r */2];
+      var rv = r[/* v */1];
+      var rl = r[/* l */0];
       if (height$2(rr) >= height$2(rl)) {
         return create$3(create$3(l, v, rl), rv, rr);
       } else if (rl) {
-        return create$3(create$3(l, v, rl.l), rl.v, create$3(rl.r, rv, rr));
+        return create$3(create$3(l, v, rl[/* l */0]), rl[/* v */1], create$3(rl[/* r */2], rv, rr));
       } else {
         throw [
               Caml_builtin_exceptions.invalid_argument,
@@ -3604,9 +3604,9 @@ function bal$2(l, v, r) {
 
 function add$3(x, t) {
   if (t) {
-    var r = t.r;
-    var v = t.v;
-    var l = t.l;
+    var r = t[/* r */2];
+    var v = t[/* v */1];
+    var l = t[/* l */0];
     var c = Curry._2(funarg.compare, x, v);
     if (c === 0) {
       return t;
@@ -3646,7 +3646,7 @@ function singleton$1(x) {
 
 function add_min_element$1(x, param) {
   if (param) {
-    return bal$2(add_min_element$1(x, param.l), param.v, param.r);
+    return bal$2(add_min_element$1(x, param[/* l */0]), param[/* v */1], param[/* r */2]);
   } else {
     return singleton$1(x);
   }
@@ -3654,7 +3654,7 @@ function add_min_element$1(x, param) {
 
 function add_max_element$1(x, param) {
   if (param) {
-    return bal$2(param.l, param.v, add_max_element$1(x, param.r));
+    return bal$2(param[/* l */0], param[/* v */1], add_max_element$1(x, param[/* r */2]));
   } else {
     return singleton$1(x);
   }
@@ -3663,12 +3663,12 @@ function add_max_element$1(x, param) {
 function join$1(l, v, r) {
   if (l) {
     if (r) {
-      var rh = r.h;
-      var lh = l.h;
+      var rh = r[/* h */3];
+      var lh = l[/* h */3];
       if (lh > (rh + 2 | 0)) {
-        return bal$2(l.l, l.v, join$1(l.r, v, r));
+        return bal$2(l[/* l */0], l[/* v */1], join$1(l[/* r */2], v, r));
       } else if (rh > (lh + 2 | 0)) {
-        return bal$2(join$1(l, v, r.l), r.v, r.r);
+        return bal$2(join$1(l, v, r[/* l */0]), r[/* v */1], r[/* r */2]);
       } else {
         return create$3(l, v, r);
       }
@@ -3684,12 +3684,12 @@ function min_elt$1(_param) {
   while(true) {
     var param = _param;
     if (param) {
-      var l = param.l;
+      var l = param[/* l */0];
       if (l) {
         _param = l;
         continue ;
       } else {
-        return param.v;
+        return param[/* v */1];
       }
     } else {
       throw Caml_builtin_exceptions.not_found;
@@ -3699,11 +3699,11 @@ function min_elt$1(_param) {
 
 function remove_min_elt$1(param) {
   if (param) {
-    var l = param.l;
+    var l = param[/* l */0];
     if (l) {
-      return bal$2(remove_min_elt$1(l), param.v, param.r);
+      return bal$2(remove_min_elt$1(l), param[/* v */1], param[/* r */2]);
     } else {
-      return param.r;
+      return param[/* r */2];
     }
   } else {
     throw [
@@ -3727,9 +3727,9 @@ function concat$1(t1, t2) {
 
 function split$1(x, param) {
   if (param) {
-    var r = param.r;
-    var v = param.v;
-    var l = param.l;
+    var r = param[/* r */2];
+    var v = param[/* v */1];
+    var l = param[/* l */0];
     var c = Curry._2(funarg.compare, x, v);
     if (c === 0) {
       return /* tuple */[
@@ -3765,11 +3765,11 @@ function mem$3(x, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      var c = Curry._2(funarg.compare, x, param.v);
+      var c = Curry._2(funarg.compare, x, param[/* v */1]);
       if (c === 0) {
         return true;
       } else {
-        _param = c < 0 ? param.l : param.r;
+        _param = c < 0 ? param[/* l */0] : param[/* r */2];
         continue ;
       }
     } else {
@@ -3781,22 +3781,22 @@ function mem$3(x, _param) {
 function union$2(s1, s2) {
   if (s1) {
     if (s2) {
-      var h2 = s2.h;
-      var v2 = s2.v;
-      var h1 = s1.h;
-      var v1 = s1.v;
+      var h2 = s2[/* h */3];
+      var v2 = s2[/* v */1];
+      var h1 = s1[/* h */3];
+      var v1 = s1[/* v */1];
       if (h1 >= h2) {
         if (h2 === 1) {
           return add$3(v2, s1);
         } else {
           var match = split$1(v1, s2);
-          return join$1(union$2(s1.l, match[0]), v1, union$2(s1.r, match[2]));
+          return join$1(union$2(s1[/* l */0], match[0]), v1, union$2(s1[/* r */2], match[2]));
         }
       } else if (h1 === 1) {
         return add$3(v1, s2);
       } else {
         var match$1 = split$1(v2, s1);
-        return join$1(union$2(match$1[0], s2.l), v2, union$2(match$1[2], s2.r));
+        return join$1(union$2(match$1[0], s2[/* l */0]), v2, union$2(match$1[2], s2[/* r */2]));
       }
     } else {
       return s1;
@@ -3808,9 +3808,9 @@ function union$2(s1, s2) {
 
 function inter$2(s1, s2) {
   if (s1 && s2) {
-    var r1 = s1.r;
-    var v1 = s1.v;
-    var l1 = s1.l;
+    var r1 = s1[/* r */2];
+    var v1 = s1[/* v */1];
+    var l1 = s1[/* l */0];
     var match = split$1(v1, s2);
     var l2 = match[0];
     if (match[1]) {
@@ -3826,9 +3826,9 @@ function inter$2(s1, s2) {
 function diff$1(s1, s2) {
   if (s1) {
     if (s2) {
-      var r1 = s1.r;
-      var v1 = s1.v;
-      var l1 = s1.l;
+      var r1 = s1[/* r */2];
+      var v1 = s1[/* v */1];
+      var l1 = s1[/* l */0];
       var match = split$1(v1, s2);
       var l2 = match[0];
       if (match[1]) {
@@ -3850,12 +3850,12 @@ function subset$1(_s1, _s2) {
     var s1 = _s1;
     if (s1) {
       if (s2) {
-        var r2 = s2.r;
-        var l2 = s2.l;
-        var r1 = s1.r;
-        var v1 = s1.v;
-        var l1 = s1.l;
-        var c = Curry._2(funarg.compare, v1, s2.v);
+        var r2 = s2[/* r */2];
+        var l2 = s2[/* l */0];
+        var r1 = s1[/* r */2];
+        var v1 = s1[/* v */1];
+        var l1 = s1[/* l */0];
+        var c = Curry._2(funarg.compare, v1, s2[/* v */1]);
         if (c === 0) {
           if (subset$1(l1, l2)) {
             _s2 = r2;
@@ -3901,8 +3901,8 @@ function fold$2(f, _s, _accu) {
     var accu = _accu;
     var s = _s;
     if (s) {
-      _accu = Curry._2(f, s.v, fold$2(f, s.l, accu));
-      _s = s.r;
+      _accu = Curry._2(f, s[/* v */1], fold$2(f, s[/* l */0], accu));
+      _s = s[/* r */2];
       continue ;
     } else {
       return accu;
@@ -3914,10 +3914,10 @@ function exists(p, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      if (Curry._1(p, param.v) || exists(p, param.l)) {
+      if (Curry._1(p, param[/* v */1]) || exists(p, param[/* l */0])) {
         return true;
       } else {
-        _param = param.r;
+        _param = param[/* r */2];
         continue ;
       }
     } else {
@@ -3931,10 +3931,10 @@ function elements_aux$1(_accu, _param) {
     var param = _param;
     var accu = _accu;
     if (param) {
-      _param = param.l;
+      _param = param[/* l */0];
       _accu = /* :: */[
-        param.v,
-        elements_aux$1(accu, param.r)
+        param[/* v */1],
+        elements_aux$1(accu, param[/* r */2])
       ];
       continue ;
     } else {
@@ -3951,7 +3951,7 @@ var funarg$1 = {
 
 function height$3(param) {
   if (param) {
-    return param.h;
+    return param[/* h */4];
   } else {
     return 0;
   }
@@ -3970,18 +3970,18 @@ function create$4(l, x, d, r) {
 }
 
 function bal$3(l, x, d, r) {
-  var hl = l ? l.h : 0;
-  var hr = r ? r.h : 0;
+  var hl = l ? l[/* h */4] : 0;
+  var hr = r ? r[/* h */4] : 0;
   if (hl > (hr + 2 | 0)) {
     if (l) {
-      var lr = l.r;
-      var ld = l.d;
-      var lv = l.v;
-      var ll = l.l;
+      var lr = l[/* r */3];
+      var ld = l[/* d */2];
+      var lv = l[/* v */1];
+      var ll = l[/* l */0];
       if (height$3(ll) >= height$3(lr)) {
         return create$4(ll, lv, ld, create$4(lr, x, d, r));
       } else if (lr) {
-        return create$4(create$4(ll, lv, ld, lr.l), lr.v, lr.d, create$4(lr.r, x, d, r));
+        return create$4(create$4(ll, lv, ld, lr[/* l */0]), lr[/* v */1], lr[/* d */2], create$4(lr[/* r */3], x, d, r));
       } else {
         throw [
               Caml_builtin_exceptions.invalid_argument,
@@ -3996,14 +3996,14 @@ function bal$3(l, x, d, r) {
     }
   } else if (hr > (hl + 2 | 0)) {
     if (r) {
-      var rr = r.r;
-      var rd = r.d;
-      var rv = r.v;
-      var rl = r.l;
+      var rr = r[/* r */3];
+      var rd = r[/* d */2];
+      var rv = r[/* v */1];
+      var rl = r[/* l */0];
       if (height$3(rr) >= height$3(rl)) {
         return create$4(create$4(l, x, d, rl), rv, rd, rr);
       } else if (rl) {
-        return create$4(create$4(l, x, d, rl.l), rl.v, rl.d, create$4(rl.r, rv, rd, rr));
+        return create$4(create$4(l, x, d, rl[/* l */0]), rl[/* v */1], rl[/* d */2], create$4(rl[/* r */3], rv, rd, rr));
       } else {
         throw [
               Caml_builtin_exceptions.invalid_argument,
@@ -4029,10 +4029,10 @@ function bal$3(l, x, d, r) {
 
 function add$4(x, data, m) {
   if (m) {
-    var r = m.r;
-    var d = m.d;
-    var v = m.v;
-    var l = m.l;
+    var r = m[/* r */3];
+    var d = m[/* d */2];
+    var v = m[/* v */1];
+    var l = m[/* l */0];
     var c = Curry._2(funarg$1.compare, x, v);
     if (c === 0) {
       if (d === data) {
@@ -4043,7 +4043,7 @@ function add$4(x, data, m) {
                 /* v */x,
                 /* d */data,
                 /* r */r,
-                /* h */m.h
+                /* h */m[/* h */4]
               ];
       }
     } else if (c < 0) {
@@ -4076,11 +4076,11 @@ function find$1(x, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      var c = Curry._2(funarg$1.compare, x, param.v);
+      var c = Curry._2(funarg$1.compare, x, param[/* v */1]);
       if (c === 0) {
-        return param.d;
+        return param[/* d */2];
       } else {
-        _param = c < 0 ? param.l : param.r;
+        _param = c < 0 ? param[/* l */0] : param[/* r */3];
         continue ;
       }
     } else {
@@ -4094,8 +4094,8 @@ function fold$3(f, _m, _accu) {
     var accu = _accu;
     var m = _m;
     if (m) {
-      _accu = Curry._3(f, m.v, m.d, fold$3(f, m.l, accu));
-      _m = m.r;
+      _accu = Curry._3(f, m[/* v */1], m[/* d */2], fold$3(f, m[/* l */0], accu));
+      _m = m[/* r */3];
       continue ;
     } else {
       return accu;
@@ -9828,15 +9828,15 @@ var crc_units = Hashtbl.create(undefined, 13);
 
 function height$5(param) {
   if (param) {
-    return param.h;
+    return param[/* h */3];
   } else {
     return 0;
   }
 }
 
 function create$6(l, v, r) {
-  var hl = l ? l.h : 0;
-  var hr = r ? r.h : 0;
+  var hl = l ? l[/* h */3] : 0;
+  var hr = r ? r[/* h */3] : 0;
   return /* Node */[
           /* l */l,
           /* v */v,
@@ -9846,17 +9846,17 @@ function create$6(l, v, r) {
 }
 
 function bal$5(l, v, r) {
-  var hl = l ? l.h : 0;
-  var hr = r ? r.h : 0;
+  var hl = l ? l[/* h */3] : 0;
+  var hr = r ? r[/* h */3] : 0;
   if (hl > (hr + 2 | 0)) {
     if (l) {
-      var lr = l.r;
-      var lv = l.v;
-      var ll = l.l;
+      var lr = l[/* r */2];
+      var lv = l[/* v */1];
+      var ll = l[/* l */0];
       if (height$5(ll) >= height$5(lr)) {
         return create$6(ll, lv, create$6(lr, v, r));
       } else if (lr) {
-        return create$6(create$6(ll, lv, lr.l), lr.v, create$6(lr.r, v, r));
+        return create$6(create$6(ll, lv, lr[/* l */0]), lr[/* v */1], create$6(lr[/* r */2], v, r));
       } else {
         throw [
               Caml_builtin_exceptions.invalid_argument,
@@ -9871,13 +9871,13 @@ function bal$5(l, v, r) {
     }
   } else if (hr > (hl + 2 | 0)) {
     if (r) {
-      var rr = r.r;
-      var rv = r.v;
-      var rl = r.l;
+      var rr = r[/* r */2];
+      var rv = r[/* v */1];
+      var rl = r[/* l */0];
       if (height$5(rr) >= height$5(rl)) {
         return create$6(create$6(l, v, rl), rv, rr);
       } else if (rl) {
-        return create$6(create$6(l, v, rl.l), rl.v, create$6(rl.r, rv, rr));
+        return create$6(create$6(l, v, rl[/* l */0]), rl[/* v */1], create$6(rl[/* r */2], rv, rr));
       } else {
         throw [
               Caml_builtin_exceptions.invalid_argument,
@@ -9902,9 +9902,9 @@ function bal$5(l, v, r) {
 
 function add$7(x, t) {
   if (t) {
-    var r = t.r;
-    var v = t.v;
-    var l = t.l;
+    var r = t[/* r */2];
+    var v = t[/* v */1];
+    var l = t[/* l */0];
     var c = Caml_primitive.caml_string_compare(x, v);
     if (c === 0) {
       return t;
@@ -9938,8 +9938,8 @@ function fold$5(f, _s, _accu) {
     var accu = _accu;
     var s = _s;
     if (s) {
-      _accu = Curry._2(f, s.v, fold$5(f, s.l, accu));
-      _s = s.r;
+      _accu = Curry._2(f, s[/* v */1], fold$5(f, s[/* l */0], accu));
+      _s = s[/* r */2];
       continue ;
     } else {
       return accu;
@@ -9952,10 +9952,10 @@ function elements_aux$2(_accu, _param) {
     var param = _param;
     var accu = _accu;
     if (param) {
-      _param = param.l;
+      _param = param[/* l */0];
       _accu = /* :: */[
-        param.v,
-        elements_aux$2(accu, param.r)
+        param[/* v */1],
+        elements_aux$2(accu, param[/* r */2])
       ];
       continue ;
     } else {
@@ -39672,7 +39672,7 @@ function compare$2(_p1, _p2) {
 
 function height$6(param) {
   if (param) {
-    return param.h;
+    return param[/* h */4];
   } else {
     return 0;
   }
@@ -39691,18 +39691,18 @@ function create$7(l, x, d, r) {
 }
 
 function bal$6(l, x, d, r) {
-  var hl = l ? l.h : 0;
-  var hr = r ? r.h : 0;
+  var hl = l ? l[/* h */4] : 0;
+  var hr = r ? r[/* h */4] : 0;
   if (hl > (hr + 2 | 0)) {
     if (l) {
-      var lr = l.r;
-      var ld = l.d;
-      var lv = l.v;
-      var ll = l.l;
+      var lr = l[/* r */3];
+      var ld = l[/* d */2];
+      var lv = l[/* v */1];
+      var ll = l[/* l */0];
       if (height$6(ll) >= height$6(lr)) {
         return create$7(ll, lv, ld, create$7(lr, x, d, r));
       } else if (lr) {
-        return create$7(create$7(ll, lv, ld, lr.l), lr.v, lr.d, create$7(lr.r, x, d, r));
+        return create$7(create$7(ll, lv, ld, lr[/* l */0]), lr[/* v */1], lr[/* d */2], create$7(lr[/* r */3], x, d, r));
       } else {
         throw [
               Caml_builtin_exceptions.invalid_argument,
@@ -39717,14 +39717,14 @@ function bal$6(l, x, d, r) {
     }
   } else if (hr > (hl + 2 | 0)) {
     if (r) {
-      var rr = r.r;
-      var rd = r.d;
-      var rv = r.v;
-      var rl = r.l;
+      var rr = r[/* r */3];
+      var rd = r[/* d */2];
+      var rv = r[/* v */1];
+      var rl = r[/* l */0];
       if (height$6(rr) >= height$6(rl)) {
         return create$7(create$7(l, x, d, rl), rv, rd, rr);
       } else if (rl) {
-        return create$7(create$7(l, x, d, rl.l), rl.v, rl.d, create$7(rl.r, rv, rd, rr));
+        return create$7(create$7(l, x, d, rl[/* l */0]), rl[/* v */1], rl[/* d */2], create$7(rl[/* r */3], rv, rd, rr));
       } else {
         throw [
               Caml_builtin_exceptions.invalid_argument,
@@ -39750,10 +39750,10 @@ function bal$6(l, x, d, r) {
 
 function add$8(x, data, m) {
   if (m) {
-    var r = m.r;
-    var d = m.d;
-    var v = m.v;
-    var l = m.l;
+    var r = m[/* r */3];
+    var d = m[/* d */2];
+    var v = m[/* v */1];
+    var l = m[/* l */0];
     var c = compare$2(x, v);
     if (c === 0) {
       if (d === data) {
@@ -39764,7 +39764,7 @@ function add$8(x, data, m) {
                 /* v */x,
                 /* d */data,
                 /* r */r,
-                /* h */m.h
+                /* h */m[/* h */4]
               ];
       }
     } else if (c < 0) {
@@ -39797,11 +39797,11 @@ function find$4(x, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      var c = compare$2(x, param.v);
+      var c = compare$2(x, param[/* v */1]);
       if (c === 0) {
-        return param.d;
+        return param[/* d */2];
       } else {
-        _param = c < 0 ? param.l : param.r;
+        _param = c < 0 ? param[/* l */0] : param[/* r */3];
         continue ;
       }
     } else {
@@ -45072,15 +45072,15 @@ function compare$3(p1, p2) {
 
 function height$7(param) {
   if (param) {
-    return param.h;
+    return param[/* h */3];
   } else {
     return 0;
   }
 }
 
 function create$8(l, v, r) {
-  var hl = l ? l.h : 0;
-  var hr = r ? r.h : 0;
+  var hl = l ? l[/* h */3] : 0;
+  var hr = r ? r[/* h */3] : 0;
   return /* Node */[
           /* l */l,
           /* v */v,
@@ -45090,17 +45090,17 @@ function create$8(l, v, r) {
 }
 
 function bal$7(l, v, r) {
-  var hl = l ? l.h : 0;
-  var hr = r ? r.h : 0;
+  var hl = l ? l[/* h */3] : 0;
+  var hr = r ? r[/* h */3] : 0;
   if (hl > (hr + 2 | 0)) {
     if (l) {
-      var lr = l.r;
-      var lv = l.v;
-      var ll = l.l;
+      var lr = l[/* r */2];
+      var lv = l[/* v */1];
+      var ll = l[/* l */0];
       if (height$7(ll) >= height$7(lr)) {
         return create$8(ll, lv, create$8(lr, v, r));
       } else if (lr) {
-        return create$8(create$8(ll, lv, lr.l), lr.v, create$8(lr.r, v, r));
+        return create$8(create$8(ll, lv, lr[/* l */0]), lr[/* v */1], create$8(lr[/* r */2], v, r));
       } else {
         throw [
               Caml_builtin_exceptions.invalid_argument,
@@ -45115,13 +45115,13 @@ function bal$7(l, v, r) {
     }
   } else if (hr > (hl + 2 | 0)) {
     if (r) {
-      var rr = r.r;
-      var rv = r.v;
-      var rl = r.l;
+      var rr = r[/* r */2];
+      var rv = r[/* v */1];
+      var rl = r[/* l */0];
       if (height$7(rr) >= height$7(rl)) {
         return create$8(create$8(l, v, rl), rv, rr);
       } else if (rl) {
-        return create$8(create$8(l, v, rl.l), rl.v, create$8(rl.r, rv, rr));
+        return create$8(create$8(l, v, rl[/* l */0]), rl[/* v */1], create$8(rl[/* r */2], rv, rr));
       } else {
         throw [
               Caml_builtin_exceptions.invalid_argument,
@@ -45146,9 +45146,9 @@ function bal$7(l, v, r) {
 
 function add$9(x, t) {
   if (t) {
-    var r = t.r;
-    var v = t.v;
-    var l = t.l;
+    var r = t[/* r */2];
+    var v = t[/* v */1];
+    var l = t[/* l */0];
     var c = compare$3(x, v);
     if (c === 0) {
       return t;
@@ -45188,7 +45188,7 @@ function singleton$2(x) {
 
 function add_min_element$2(x, param) {
   if (param) {
-    return bal$7(add_min_element$2(x, param.l), param.v, param.r);
+    return bal$7(add_min_element$2(x, param[/* l */0]), param[/* v */1], param[/* r */2]);
   } else {
     return singleton$2(x);
   }
@@ -45196,7 +45196,7 @@ function add_min_element$2(x, param) {
 
 function add_max_element$2(x, param) {
   if (param) {
-    return bal$7(param.l, param.v, add_max_element$2(x, param.r));
+    return bal$7(param[/* l */0], param[/* v */1], add_max_element$2(x, param[/* r */2]));
   } else {
     return singleton$2(x);
   }
@@ -45205,12 +45205,12 @@ function add_max_element$2(x, param) {
 function join$2(l, v, r) {
   if (l) {
     if (r) {
-      var rh = r.h;
-      var lh = l.h;
+      var rh = r[/* h */3];
+      var lh = l[/* h */3];
       if (lh > (rh + 2 | 0)) {
-        return bal$7(l.l, l.v, join$2(l.r, v, r));
+        return bal$7(l[/* l */0], l[/* v */1], join$2(l[/* r */2], v, r));
       } else if (rh > (lh + 2 | 0)) {
-        return bal$7(join$2(l, v, r.l), r.v, r.r);
+        return bal$7(join$2(l, v, r[/* l */0]), r[/* v */1], r[/* r */2]);
       } else {
         return create$8(l, v, r);
       }
@@ -45224,9 +45224,9 @@ function join$2(l, v, r) {
 
 function split$2(x, param) {
   if (param) {
-    var r = param.r;
-    var v = param.v;
-    var l = param.l;
+    var r = param[/* r */2];
+    var v = param[/* v */1];
+    var l = param[/* l */0];
     var c = compare$3(x, v);
     if (c === 0) {
       return /* tuple */[
@@ -45261,22 +45261,22 @@ function split$2(x, param) {
 function union$3(s1, s2) {
   if (s1) {
     if (s2) {
-      var h2 = s2.h;
-      var v2 = s2.v;
-      var h1 = s1.h;
-      var v1 = s1.v;
+      var h2 = s2[/* h */3];
+      var v2 = s2[/* v */1];
+      var h1 = s1[/* h */3];
+      var v1 = s1[/* v */1];
       if (h1 >= h2) {
         if (h2 === 1) {
           return add$9(v2, s1);
         } else {
           var match = split$2(v1, s2);
-          return join$2(union$3(s1.l, match[0]), v1, union$3(s1.r, match[2]));
+          return join$2(union$3(s1[/* l */0], match[0]), v1, union$3(s1[/* r */2], match[2]));
         }
       } else if (h1 === 1) {
         return add$9(v1, s2);
       } else {
         var match$1 = split$2(v2, s1);
-        return join$2(union$3(match$1[0], s2.l), v2, union$3(match$1[2], s2.r));
+        return join$2(union$3(match$1[0], s2[/* l */0]), v2, union$3(match$1[2], s2[/* r */2]));
       }
     } else {
       return s1;
@@ -45291,8 +45291,8 @@ function fold$6(f, _s, _accu) {
     var accu = _accu;
     var s = _s;
     if (s) {
-      _accu = Curry._2(f, s.v, fold$6(f, s.l, accu));
-      _s = s.r;
+      _accu = Curry._2(f, s[/* v */1], fold$6(f, s[/* l */0], accu));
+      _s = s[/* r */2];
       continue ;
     } else {
       return accu;
@@ -45302,7 +45302,7 @@ function fold$6(f, _s, _accu) {
 
 function height$8(param) {
   if (param) {
-    return param.h;
+    return param[/* h */4];
   } else {
     return 0;
   }
@@ -45321,18 +45321,18 @@ function create$9(l, x, d, r) {
 }
 
 function bal$8(l, x, d, r) {
-  var hl = l ? l.h : 0;
-  var hr = r ? r.h : 0;
+  var hl = l ? l[/* h */4] : 0;
+  var hr = r ? r[/* h */4] : 0;
   if (hl > (hr + 2 | 0)) {
     if (l) {
-      var lr = l.r;
-      var ld = l.d;
-      var lv = l.v;
-      var ll = l.l;
+      var lr = l[/* r */3];
+      var ld = l[/* d */2];
+      var lv = l[/* v */1];
+      var ll = l[/* l */0];
       if (height$8(ll) >= height$8(lr)) {
         return create$9(ll, lv, ld, create$9(lr, x, d, r));
       } else if (lr) {
-        return create$9(create$9(ll, lv, ld, lr.l), lr.v, lr.d, create$9(lr.r, x, d, r));
+        return create$9(create$9(ll, lv, ld, lr[/* l */0]), lr[/* v */1], lr[/* d */2], create$9(lr[/* r */3], x, d, r));
       } else {
         throw [
               Caml_builtin_exceptions.invalid_argument,
@@ -45347,14 +45347,14 @@ function bal$8(l, x, d, r) {
     }
   } else if (hr > (hl + 2 | 0)) {
     if (r) {
-      var rr = r.r;
-      var rd = r.d;
-      var rv = r.v;
-      var rl = r.l;
+      var rr = r[/* r */3];
+      var rd = r[/* d */2];
+      var rv = r[/* v */1];
+      var rl = r[/* l */0];
       if (height$8(rr) >= height$8(rl)) {
         return create$9(create$9(l, x, d, rl), rv, rd, rr);
       } else if (rl) {
-        return create$9(create$9(l, x, d, rl.l), rl.v, rl.d, create$9(rl.r, rv, rd, rr));
+        return create$9(create$9(l, x, d, rl[/* l */0]), rl[/* v */1], rl[/* d */2], create$9(rl[/* r */3], rv, rd, rr));
       } else {
         throw [
               Caml_builtin_exceptions.invalid_argument,
@@ -45380,10 +45380,10 @@ function bal$8(l, x, d, r) {
 
 function add$10(x, data, m) {
   if (m) {
-    var r = m.r;
-    var d = m.d;
-    var v = m.v;
-    var l = m.l;
+    var r = m[/* r */3];
+    var d = m[/* d */2];
+    var v = m[/* v */1];
+    var l = m[/* l */0];
     var c = compare$3(x, v);
     if (c === 0) {
       if (d === data) {
@@ -45394,7 +45394,7 @@ function add$10(x, data, m) {
                 /* v */x,
                 /* d */data,
                 /* r */r,
-                /* h */m.h
+                /* h */m[/* h */4]
               ];
       }
     } else if (c < 0) {
@@ -45427,11 +45427,11 @@ function find$5(x, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      var c = compare$3(x, param.v);
+      var c = compare$3(x, param[/* v */1]);
       if (c === 0) {
-        return param.d;
+        return param[/* d */2];
       } else {
-        _param = c < 0 ? param.l : param.r;
+        _param = c < 0 ? param[/* l */0] : param[/* r */3];
         continue ;
       }
     } else {
@@ -45442,15 +45442,15 @@ function find$5(x, _param) {
 
 function height$9(param) {
   if (param) {
-    return param.h;
+    return param[/* h */3];
   } else {
     return 0;
   }
 }
 
 function create$10(l, v, r) {
-  var hl = l ? l.h : 0;
-  var hr = r ? r.h : 0;
+  var hl = l ? l[/* h */3] : 0;
+  var hr = r ? r[/* h */3] : 0;
   return /* Node */[
           /* l */l,
           /* v */v,
@@ -45460,17 +45460,17 @@ function create$10(l, v, r) {
 }
 
 function bal$9(l, v, r) {
-  var hl = l ? l.h : 0;
-  var hr = r ? r.h : 0;
+  var hl = l ? l[/* h */3] : 0;
+  var hr = r ? r[/* h */3] : 0;
   if (hl > (hr + 2 | 0)) {
     if (l) {
-      var lr = l.r;
-      var lv = l.v;
-      var ll = l.l;
+      var lr = l[/* r */2];
+      var lv = l[/* v */1];
+      var ll = l[/* l */0];
       if (height$9(ll) >= height$9(lr)) {
         return create$10(ll, lv, create$10(lr, v, r));
       } else if (lr) {
-        return create$10(create$10(ll, lv, lr.l), lr.v, create$10(lr.r, v, r));
+        return create$10(create$10(ll, lv, lr[/* l */0]), lr[/* v */1], create$10(lr[/* r */2], v, r));
       } else {
         throw [
               Caml_builtin_exceptions.invalid_argument,
@@ -45485,13 +45485,13 @@ function bal$9(l, v, r) {
     }
   } else if (hr > (hl + 2 | 0)) {
     if (r) {
-      var rr = r.r;
-      var rv = r.v;
-      var rl = r.l;
+      var rr = r[/* r */2];
+      var rv = r[/* v */1];
+      var rl = r[/* l */0];
       if (height$9(rr) >= height$9(rl)) {
         return create$10(create$10(l, v, rl), rv, rr);
       } else if (rl) {
-        return create$10(create$10(l, v, rl.l), rl.v, create$10(rl.r, rv, rr));
+        return create$10(create$10(l, v, rl[/* l */0]), rl[/* v */1], create$10(rl[/* r */2], rv, rr));
       } else {
         throw [
               Caml_builtin_exceptions.invalid_argument,
@@ -45516,9 +45516,9 @@ function bal$9(l, v, r) {
 
 function add$11(x, t) {
   if (t) {
-    var r = t.r;
-    var v = t.v;
-    var l = t.l;
+    var r = t[/* r */2];
+    var v = t[/* v */1];
+    var l = t[/* l */0];
     var c = Caml_obj.caml_compare(x, v);
     if (c === 0) {
       return t;
@@ -45558,7 +45558,7 @@ function singleton$3(x) {
 
 function add_min_element$3(x, param) {
   if (param) {
-    return bal$9(add_min_element$3(x, param.l), param.v, param.r);
+    return bal$9(add_min_element$3(x, param[/* l */0]), param[/* v */1], param[/* r */2]);
   } else {
     return singleton$3(x);
   }
@@ -45566,7 +45566,7 @@ function add_min_element$3(x, param) {
 
 function add_max_element$3(x, param) {
   if (param) {
-    return bal$9(param.l, param.v, add_max_element$3(x, param.r));
+    return bal$9(param[/* l */0], param[/* v */1], add_max_element$3(x, param[/* r */2]));
   } else {
     return singleton$3(x);
   }
@@ -45575,12 +45575,12 @@ function add_max_element$3(x, param) {
 function join$3(l, v, r) {
   if (l) {
     if (r) {
-      var rh = r.h;
-      var lh = l.h;
+      var rh = r[/* h */3];
+      var lh = l[/* h */3];
       if (lh > (rh + 2 | 0)) {
-        return bal$9(l.l, l.v, join$3(l.r, v, r));
+        return bal$9(l[/* l */0], l[/* v */1], join$3(l[/* r */2], v, r));
       } else if (rh > (lh + 2 | 0)) {
-        return bal$9(join$3(l, v, r.l), r.v, r.r);
+        return bal$9(join$3(l, v, r[/* l */0]), r[/* v */1], r[/* r */2]);
       } else {
         return create$10(l, v, r);
       }
@@ -45594,9 +45594,9 @@ function join$3(l, v, r) {
 
 function split$3(x, param) {
   if (param) {
-    var r = param.r;
-    var v = param.v;
-    var l = param.l;
+    var r = param[/* r */2];
+    var v = param[/* v */1];
+    var l = param[/* l */0];
     var c = Caml_obj.caml_compare(x, v);
     if (c === 0) {
       return /* tuple */[
@@ -45632,11 +45632,11 @@ function mem$5(x, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      var c = Caml_obj.caml_compare(x, param.v);
+      var c = Caml_obj.caml_compare(x, param[/* v */1]);
       if (c === 0) {
         return true;
       } else {
-        _param = c < 0 ? param.l : param.r;
+        _param = c < 0 ? param[/* l */0] : param[/* r */2];
         continue ;
       }
     } else {
@@ -45648,22 +45648,22 @@ function mem$5(x, _param) {
 function union$4(s1, s2) {
   if (s1) {
     if (s2) {
-      var h2 = s2.h;
-      var v2 = s2.v;
-      var h1 = s1.h;
-      var v1 = s1.v;
+      var h2 = s2[/* h */3];
+      var v2 = s2[/* v */1];
+      var h1 = s1[/* h */3];
+      var v1 = s1[/* v */1];
       if (h1 >= h2) {
         if (h2 === 1) {
           return add$11(v2, s1);
         } else {
           var match = split$3(v1, s2);
-          return join$3(union$4(s1.l, match[0]), v1, union$4(s1.r, match[2]));
+          return join$3(union$4(s1[/* l */0], match[0]), v1, union$4(s1[/* r */2], match[2]));
         }
       } else if (h1 === 1) {
         return add$11(v1, s2);
       } else {
         var match$1 = split$3(v2, s1);
-        return join$3(union$4(match$1[0], s2.l), v2, union$4(match$1[2], s2.r));
+        return join$3(union$4(match$1[0], s2[/* l */0]), v2, union$4(match$1[2], s2[/* r */2]));
       }
     } else {
       return s1;
@@ -64308,15 +64308,15 @@ function set_fixed_row(env, loc, p, decl) {
 
 function height$10(param) {
   if (param) {
-    return param.h;
+    return param[/* h */3];
   } else {
     return 0;
   }
 }
 
 function create$11(l, v, r) {
-  var hl = l ? l.h : 0;
-  var hr = r ? r.h : 0;
+  var hl = l ? l[/* h */3] : 0;
+  var hr = r ? r[/* h */3] : 0;
   return /* Node */[
           /* l */l,
           /* v */v,
@@ -64326,17 +64326,17 @@ function create$11(l, v, r) {
 }
 
 function bal$10(l, v, r) {
-  var hl = l ? l.h : 0;
-  var hr = r ? r.h : 0;
+  var hl = l ? l[/* h */3] : 0;
+  var hr = r ? r[/* h */3] : 0;
   if (hl > (hr + 2 | 0)) {
     if (l) {
-      var lr = l.r;
-      var lv = l.v;
-      var ll = l.l;
+      var lr = l[/* r */2];
+      var lv = l[/* v */1];
+      var ll = l[/* l */0];
       if (height$10(ll) >= height$10(lr)) {
         return create$11(ll, lv, create$11(lr, v, r));
       } else if (lr) {
-        return create$11(create$11(ll, lv, lr.l), lr.v, create$11(lr.r, v, r));
+        return create$11(create$11(ll, lv, lr[/* l */0]), lr[/* v */1], create$11(lr[/* r */2], v, r));
       } else {
         throw [
               Caml_builtin_exceptions.invalid_argument,
@@ -64351,13 +64351,13 @@ function bal$10(l, v, r) {
     }
   } else if (hr > (hl + 2 | 0)) {
     if (r) {
-      var rr = r.r;
-      var rv = r.v;
-      var rl = r.l;
+      var rr = r[/* r */2];
+      var rv = r[/* v */1];
+      var rl = r[/* l */0];
       if (height$10(rr) >= height$10(rl)) {
         return create$11(create$11(l, v, rl), rv, rr);
       } else if (rl) {
-        return create$11(create$11(l, v, rl.l), rl.v, create$11(rl.r, rv, rr));
+        return create$11(create$11(l, v, rl[/* l */0]), rl[/* v */1], create$11(rl[/* r */2], rv, rr));
       } else {
         throw [
               Caml_builtin_exceptions.invalid_argument,
@@ -64382,9 +64382,9 @@ function bal$10(l, v, r) {
 
 function add$12(x, t) {
   if (t) {
-    var r = t.r;
-    var v = t.v;
-    var l = t.l;
+    var r = t[/* r */2];
+    var v = t[/* v */1];
+    var l = t[/* l */0];
     var c = Caml_primitive.caml_string_compare(x, v);
     if (c === 0) {
       return t;
@@ -64417,11 +64417,11 @@ function mem$6(x, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      var c = Caml_primitive.caml_string_compare(x, param.v);
+      var c = Caml_primitive.caml_string_compare(x, param[/* v */1]);
       if (c === 0) {
         return true;
       } else {
-        _param = c < 0 ? param.l : param.r;
+        _param = c < 0 ? param[/* l */0] : param[/* r */2];
         continue ;
       }
     } else {
@@ -64603,7 +64603,7 @@ function check_constraints_rec(env, loc, visited, _ty) {
 
 function height$11(param) {
   if (param) {
-    return param.h;
+    return param[/* h */4];
   } else {
     return 0;
   }
@@ -64622,18 +64622,18 @@ function create$12(l, x, d, r) {
 }
 
 function bal$11(l, x, d, r) {
-  var hl = l ? l.h : 0;
-  var hr = r ? r.h : 0;
+  var hl = l ? l[/* h */4] : 0;
+  var hr = r ? r[/* h */4] : 0;
   if (hl > (hr + 2 | 0)) {
     if (l) {
-      var lr = l.r;
-      var ld = l.d;
-      var lv = l.v;
-      var ll = l.l;
+      var lr = l[/* r */3];
+      var ld = l[/* d */2];
+      var lv = l[/* v */1];
+      var ll = l[/* l */0];
       if (height$11(ll) >= height$11(lr)) {
         return create$12(ll, lv, ld, create$12(lr, x, d, r));
       } else if (lr) {
-        return create$12(create$12(ll, lv, ld, lr.l), lr.v, lr.d, create$12(lr.r, x, d, r));
+        return create$12(create$12(ll, lv, ld, lr[/* l */0]), lr[/* v */1], lr[/* d */2], create$12(lr[/* r */3], x, d, r));
       } else {
         throw [
               Caml_builtin_exceptions.invalid_argument,
@@ -64648,14 +64648,14 @@ function bal$11(l, x, d, r) {
     }
   } else if (hr > (hl + 2 | 0)) {
     if (r) {
-      var rr = r.r;
-      var rd = r.d;
-      var rv = r.v;
-      var rl = r.l;
+      var rr = r[/* r */3];
+      var rd = r[/* d */2];
+      var rv = r[/* v */1];
+      var rl = r[/* l */0];
       if (height$11(rr) >= height$11(rl)) {
         return create$12(create$12(l, x, d, rl), rv, rd, rr);
       } else if (rl) {
-        return create$12(create$12(l, x, d, rl.l), rl.v, rl.d, create$12(rl.r, rv, rd, rr));
+        return create$12(create$12(l, x, d, rl[/* l */0]), rl[/* v */1], rl[/* d */2], create$12(rl[/* r */3], rv, rd, rr));
       } else {
         throw [
               Caml_builtin_exceptions.invalid_argument,
@@ -64681,10 +64681,10 @@ function bal$11(l, x, d, r) {
 
 function add$13(x, data, m) {
   if (m) {
-    var r = m.r;
-    var d = m.d;
-    var v = m.v;
-    var l = m.l;
+    var r = m[/* r */3];
+    var d = m[/* d */2];
+    var v = m[/* v */1];
+    var l = m[/* l */0];
     var c = Caml_primitive.caml_string_compare(x, v);
     if (c === 0) {
       if (d === data) {
@@ -64695,7 +64695,7 @@ function add$13(x, data, m) {
                 /* v */x,
                 /* d */data,
                 /* r */r,
-                /* h */m.h
+                /* h */m[/* h */4]
               ];
       }
     } else if (c < 0) {
@@ -64728,11 +64728,11 @@ function find$6(x, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      var c = Caml_primitive.caml_string_compare(x, param.v);
+      var c = Caml_primitive.caml_string_compare(x, param[/* v */1]);
       if (c === 0) {
-        return param.d;
+        return param[/* d */2];
       } else {
-        _param = c < 0 ? param.l : param.r;
+        _param = c < 0 ? param[/* l */0] : param[/* r */3];
         continue ;
       }
     } else {
@@ -73241,15 +73241,15 @@ function check_recmod_typedecls(env, sdecls, decls) {
 
 function height$12(param) {
   if (param) {
-    return param.h;
+    return param[/* h */3];
   } else {
     return 0;
   }
 }
 
 function create$13(l, v, r) {
-  var hl = l ? l.h : 0;
-  var hr = r ? r.h : 0;
+  var hl = l ? l[/* h */3] : 0;
+  var hr = r ? r[/* h */3] : 0;
   return /* Node */[
           /* l */l,
           /* v */v,
@@ -73259,17 +73259,17 @@ function create$13(l, v, r) {
 }
 
 function bal$12(l, v, r) {
-  var hl = l ? l.h : 0;
-  var hr = r ? r.h : 0;
+  var hl = l ? l[/* h */3] : 0;
+  var hr = r ? r[/* h */3] : 0;
   if (hl > (hr + 2 | 0)) {
     if (l) {
-      var lr = l.r;
-      var lv = l.v;
-      var ll = l.l;
+      var lr = l[/* r */2];
+      var lv = l[/* v */1];
+      var ll = l[/* l */0];
       if (height$12(ll) >= height$12(lr)) {
         return create$13(ll, lv, create$13(lr, v, r));
       } else if (lr) {
-        return create$13(create$13(ll, lv, lr.l), lr.v, create$13(lr.r, v, r));
+        return create$13(create$13(ll, lv, lr[/* l */0]), lr[/* v */1], create$13(lr[/* r */2], v, r));
       } else {
         throw [
               Caml_builtin_exceptions.invalid_argument,
@@ -73284,13 +73284,13 @@ function bal$12(l, v, r) {
     }
   } else if (hr > (hl + 2 | 0)) {
     if (r) {
-      var rr = r.r;
-      var rv = r.v;
-      var rl = r.l;
+      var rr = r[/* r */2];
+      var rv = r[/* v */1];
+      var rl = r[/* l */0];
       if (height$12(rr) >= height$12(rl)) {
         return create$13(create$13(l, v, rl), rv, rr);
       } else if (rl) {
-        return create$13(create$13(l, v, rl.l), rl.v, create$13(rl.r, rv, rr));
+        return create$13(create$13(l, v, rl[/* l */0]), rl[/* v */1], create$13(rl[/* r */2], rv, rr));
       } else {
         throw [
               Caml_builtin_exceptions.invalid_argument,
@@ -73315,9 +73315,9 @@ function bal$12(l, v, r) {
 
 function add$14(x, t) {
   if (t) {
-    var r = t.r;
-    var v = t.v;
-    var l = t.l;
+    var r = t[/* r */2];
+    var v = t[/* v */1];
+    var l = t[/* l */0];
     var c = Caml_primitive.caml_string_compare(x, v);
     if (c === 0) {
       return t;
@@ -73350,11 +73350,11 @@ function mem$7(x, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      var c = Caml_primitive.caml_string_compare(x, param.v);
+      var c = Caml_primitive.caml_string_compare(x, param[/* v */1]);
       if (c === 0) {
         return true;
       } else {
-        _param = c < 0 ? param.l : param.r;
+        _param = c < 0 ? param[/* l */0] : param[/* r */2];
         continue ;
       }
     } else {

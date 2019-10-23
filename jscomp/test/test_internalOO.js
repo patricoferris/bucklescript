@@ -45,7 +45,7 @@ function public_method_label(s) {
 
 function height(param) {
   if (param) {
-    return param.h;
+    return param[/* h */4];
   } else {
     return 0;
   }
@@ -74,18 +74,18 @@ function singleton(x, d) {
 }
 
 function bal(l, x, d, r) {
-  var hl = l ? l.h : 0;
-  var hr = r ? r.h : 0;
+  var hl = l ? l[/* h */4] : 0;
+  var hr = r ? r[/* h */4] : 0;
   if (hl > (hr + 2 | 0)) {
     if (l) {
-      var lr = l.r;
-      var ld = l.d;
-      var lv = l.v;
-      var ll = l.l;
+      var lr = l[/* r */3];
+      var ld = l[/* d */2];
+      var lv = l[/* v */1];
+      var ll = l[/* l */0];
       if (height(ll) >= height(lr)) {
         return create(ll, lv, ld, create(lr, x, d, r));
       } else if (lr) {
-        return create(create(ll, lv, ld, lr.l), lr.v, lr.d, create(lr.r, x, d, r));
+        return create(create(ll, lv, ld, lr[/* l */0]), lr[/* v */1], lr[/* d */2], create(lr[/* r */3], x, d, r));
       } else {
         throw [
               Caml_builtin_exceptions.invalid_argument,
@@ -100,14 +100,14 @@ function bal(l, x, d, r) {
     }
   } else if (hr > (hl + 2 | 0)) {
     if (r) {
-      var rr = r.r;
-      var rd = r.d;
-      var rv = r.v;
-      var rl = r.l;
+      var rr = r[/* r */3];
+      var rd = r[/* d */2];
+      var rv = r[/* v */1];
+      var rl = r[/* l */0];
       if (height(rr) >= height(rl)) {
         return create(create(l, x, d, rl), rv, rd, rr);
       } else if (rl) {
-        return create(create(l, x, d, rl.l), rl.v, rl.d, create(rl.r, rv, rd, rr));
+        return create(create(l, x, d, rl[/* l */0]), rl[/* v */1], rl[/* d */2], create(rl[/* r */3], rv, rd, rr));
       } else {
         throw [
               Caml_builtin_exceptions.invalid_argument,
@@ -141,10 +141,10 @@ function is_empty(param) {
 
 function add(x, data, m) {
   if (m) {
-    var r = m.r;
-    var d = m.d;
-    var v = m.v;
-    var l = m.l;
+    var r = m[/* r */3];
+    var d = m[/* d */2];
+    var v = m[/* v */1];
+    var l = m[/* l */0];
     var c = Caml_primitive.caml_string_compare(x, v);
     if (c === 0) {
       if (d === data) {
@@ -155,7 +155,7 @@ function add(x, data, m) {
                 /* v */x,
                 /* d */data,
                 /* r */r,
-                /* h */m.h
+                /* h */m[/* h */4]
               ];
       }
     } else if (c < 0) {
@@ -188,11 +188,11 @@ function find(x, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      var c = Caml_primitive.caml_string_compare(x, param.v);
+      var c = Caml_primitive.caml_string_compare(x, param[/* v */1]);
       if (c === 0) {
-        return param.d;
+        return param[/* d */2];
       } else {
-        _param = c < 0 ? param.l : param.r;
+        _param = c < 0 ? param[/* l */0] : param[/* r */3];
         continue ;
       }
     } else {
@@ -205,25 +205,25 @@ function find_first(f, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      var v = param.v;
+      var v = param[/* v */1];
       if (Curry._1(f, v)) {
         var _v0 = v;
-        var _d0 = param.d;
+        var _d0 = param[/* d */2];
         var f$1 = f;
-        var _param$1 = param.l;
+        var _param$1 = param[/* l */0];
         while(true) {
           var param$1 = _param$1;
           var d0 = _d0;
           var v0 = _v0;
           if (param$1) {
-            var v$1 = param$1.v;
+            var v$1 = param$1[/* v */1];
             if (Curry._1(f$1, v$1)) {
-              _param$1 = param$1.l;
-              _d0 = param$1.d;
+              _param$1 = param$1[/* l */0];
+              _d0 = param$1[/* d */2];
               _v0 = v$1;
               continue ;
             } else {
-              _param$1 = param$1.r;
+              _param$1 = param$1[/* r */3];
               continue ;
             }
           } else {
@@ -234,7 +234,7 @@ function find_first(f, _param) {
           }
         };
       } else {
-        _param = param.r;
+        _param = param[/* r */3];
         continue ;
       }
     } else {
@@ -247,25 +247,25 @@ function find_first_opt(f, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      var v = param.v;
+      var v = param[/* v */1];
       if (Curry._1(f, v)) {
         var _v0 = v;
-        var _d0 = param.d;
+        var _d0 = param[/* d */2];
         var f$1 = f;
-        var _param$1 = param.l;
+        var _param$1 = param[/* l */0];
         while(true) {
           var param$1 = _param$1;
           var d0 = _d0;
           var v0 = _v0;
           if (param$1) {
-            var v$1 = param$1.v;
+            var v$1 = param$1[/* v */1];
             if (Curry._1(f$1, v$1)) {
-              _param$1 = param$1.l;
-              _d0 = param$1.d;
+              _param$1 = param$1[/* l */0];
+              _d0 = param$1[/* d */2];
               _v0 = v$1;
               continue ;
             } else {
-              _param$1 = param$1.r;
+              _param$1 = param$1[/* r */3];
               continue ;
             }
           } else {
@@ -276,7 +276,7 @@ function find_first_opt(f, _param) {
           }
         };
       } else {
-        _param = param.r;
+        _param = param[/* r */3];
         continue ;
       }
     } else {
@@ -289,25 +289,25 @@ function find_last(f, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      var v = param.v;
+      var v = param[/* v */1];
       if (Curry._1(f, v)) {
         var _v0 = v;
-        var _d0 = param.d;
+        var _d0 = param[/* d */2];
         var f$1 = f;
-        var _param$1 = param.r;
+        var _param$1 = param[/* r */3];
         while(true) {
           var param$1 = _param$1;
           var d0 = _d0;
           var v0 = _v0;
           if (param$1) {
-            var v$1 = param$1.v;
+            var v$1 = param$1[/* v */1];
             if (Curry._1(f$1, v$1)) {
-              _param$1 = param$1.r;
-              _d0 = param$1.d;
+              _param$1 = param$1[/* r */3];
+              _d0 = param$1[/* d */2];
               _v0 = v$1;
               continue ;
             } else {
-              _param$1 = param$1.l;
+              _param$1 = param$1[/* l */0];
               continue ;
             }
           } else {
@@ -318,7 +318,7 @@ function find_last(f, _param) {
           }
         };
       } else {
-        _param = param.l;
+        _param = param[/* l */0];
         continue ;
       }
     } else {
@@ -331,25 +331,25 @@ function find_last_opt(f, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      var v = param.v;
+      var v = param[/* v */1];
       if (Curry._1(f, v)) {
         var _v0 = v;
-        var _d0 = param.d;
+        var _d0 = param[/* d */2];
         var f$1 = f;
-        var _param$1 = param.r;
+        var _param$1 = param[/* r */3];
         while(true) {
           var param$1 = _param$1;
           var d0 = _d0;
           var v0 = _v0;
           if (param$1) {
-            var v$1 = param$1.v;
+            var v$1 = param$1[/* v */1];
             if (Curry._1(f$1, v$1)) {
-              _param$1 = param$1.r;
-              _d0 = param$1.d;
+              _param$1 = param$1[/* r */3];
+              _d0 = param$1[/* d */2];
               _v0 = v$1;
               continue ;
             } else {
-              _param$1 = param$1.l;
+              _param$1 = param$1[/* l */0];
               continue ;
             }
           } else {
@@ -360,7 +360,7 @@ function find_last_opt(f, _param) {
           }
         };
       } else {
-        _param = param.l;
+        _param = param[/* l */0];
         continue ;
       }
     } else {
@@ -373,11 +373,11 @@ function find_opt(x, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      var c = Caml_primitive.caml_string_compare(x, param.v);
+      var c = Caml_primitive.caml_string_compare(x, param[/* v */1]);
       if (c === 0) {
-        return Caml_option.some(param.d);
+        return Caml_option.some(param[/* d */2]);
       } else {
-        _param = c < 0 ? param.l : param.r;
+        _param = c < 0 ? param[/* l */0] : param[/* r */3];
         continue ;
       }
     } else {
@@ -390,11 +390,11 @@ function mem(x, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      var c = Caml_primitive.caml_string_compare(x, param.v);
+      var c = Caml_primitive.caml_string_compare(x, param[/* v */1]);
       if (c === 0) {
         return true;
       } else {
-        _param = c < 0 ? param.l : param.r;
+        _param = c < 0 ? param[/* l */0] : param[/* r */3];
         continue ;
       }
     } else {
@@ -407,14 +407,14 @@ function min_binding(_param) {
   while(true) {
     var param = _param;
     if (param) {
-      var l = param.l;
+      var l = param[/* l */0];
       if (l) {
         _param = l;
         continue ;
       } else {
         return /* tuple */[
-                param.v,
-                param.d
+                param[/* v */1],
+                param[/* d */2]
               ];
       }
     } else {
@@ -427,14 +427,14 @@ function min_binding_opt(_param) {
   while(true) {
     var param = _param;
     if (param) {
-      var l = param.l;
+      var l = param[/* l */0];
       if (l) {
         _param = l;
         continue ;
       } else {
         return /* tuple */[
-                param.v,
-                param.d
+                param[/* v */1],
+                param[/* d */2]
               ];
       }
     } else {
@@ -447,14 +447,14 @@ function max_binding(_param) {
   while(true) {
     var param = _param;
     if (param) {
-      var r = param.r;
+      var r = param[/* r */3];
       if (r) {
         _param = r;
         continue ;
       } else {
         return /* tuple */[
-                param.v,
-                param.d
+                param[/* v */1],
+                param[/* d */2]
               ];
       }
     } else {
@@ -467,14 +467,14 @@ function max_binding_opt(_param) {
   while(true) {
     var param = _param;
     if (param) {
-      var r = param.r;
+      var r = param[/* r */3];
       if (r) {
         _param = r;
         continue ;
       } else {
         return /* tuple */[
-                param.v,
-                param.d
+                param[/* v */1],
+                param[/* d */2]
               ];
       }
     } else {
@@ -485,11 +485,11 @@ function max_binding_opt(_param) {
 
 function remove_min_binding(param) {
   if (param) {
-    var l = param.l;
+    var l = param[/* l */0];
     if (l) {
-      return bal(remove_min_binding(l), param.v, param.d, param.r);
+      return bal(remove_min_binding(l), param[/* v */1], param[/* d */2], param[/* r */3]);
     } else {
-      return param.r;
+      return param[/* r */3];
     }
   } else {
     throw [
@@ -514,10 +514,10 @@ function merge(t1, t2) {
 
 function remove(x, m) {
   if (m) {
-    var r = m.r;
-    var d = m.d;
-    var v = m.v;
-    var l = m.l;
+    var r = m[/* r */3];
+    var d = m[/* d */2];
+    var v = m[/* v */1];
+    var l = m[/* l */0];
     var c = Caml_primitive.caml_string_compare(x, v);
     if (c === 0) {
       return merge(l, r);
@@ -543,10 +543,10 @@ function remove(x, m) {
 
 function update(x, f, m) {
   if (m) {
-    var r = m.r;
-    var d = m.d;
-    var v = m.v;
-    var l = m.l;
+    var r = m[/* r */3];
+    var d = m[/* d */2];
+    var v = m[/* v */1];
+    var l = m[/* l */0];
     var c = Caml_primitive.caml_string_compare(x, v);
     if (c === 0) {
       var match = Curry._1(f, Caml_option.some(d));
@@ -560,7 +560,7 @@ function update(x, f, m) {
                   /* v */x,
                   /* d */data,
                   /* r */r,
-                  /* h */m.h
+                  /* h */m[/* h */4]
                 ];
         }
       } else {
@@ -601,9 +601,9 @@ function iter(f, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      iter(f, param.l);
-      Curry._2(f, param.v, param.d);
-      _param = param.r;
+      iter(f, param[/* l */0]);
+      Curry._2(f, param[/* v */1], param[/* d */2]);
+      _param = param[/* r */3];
       continue ;
     } else {
       return /* () */0;
@@ -613,15 +613,15 @@ function iter(f, _param) {
 
 function map(f, param) {
   if (param) {
-    var l$prime = map(f, param.l);
-    var d$prime = Curry._1(f, param.d);
-    var r$prime = map(f, param.r);
+    var l$prime = map(f, param[/* l */0]);
+    var d$prime = Curry._1(f, param[/* d */2]);
+    var r$prime = map(f, param[/* r */3]);
     return /* Node */[
             /* l */l$prime,
-            /* v */param.v,
+            /* v */param[/* v */1],
             /* d */d$prime,
             /* r */r$prime,
-            /* h */param.h
+            /* h */param[/* h */4]
           ];
   } else {
     return /* Empty */0;
@@ -630,16 +630,16 @@ function map(f, param) {
 
 function mapi(f, param) {
   if (param) {
-    var v = param.v;
-    var l$prime = mapi(f, param.l);
-    var d$prime = Curry._2(f, v, param.d);
-    var r$prime = mapi(f, param.r);
+    var v = param[/* v */1];
+    var l$prime = mapi(f, param[/* l */0]);
+    var d$prime = Curry._2(f, v, param[/* d */2]);
+    var r$prime = mapi(f, param[/* r */3]);
     return /* Node */[
             /* l */l$prime,
             /* v */v,
             /* d */d$prime,
             /* r */r$prime,
-            /* h */param.h
+            /* h */param[/* h */4]
           ];
   } else {
     return /* Empty */0;
@@ -651,8 +651,8 @@ function fold(f, _m, _accu) {
     var accu = _accu;
     var m = _m;
     if (m) {
-      _accu = Curry._3(f, m.v, m.d, fold(f, m.l, accu));
-      _m = m.r;
+      _accu = Curry._3(f, m[/* v */1], m[/* d */2], fold(f, m[/* l */0], accu));
+      _m = m[/* r */3];
       continue ;
     } else {
       return accu;
@@ -664,8 +664,8 @@ function for_all(p, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      if (Curry._2(p, param.v, param.d) && for_all(p, param.l)) {
-        _param = param.r;
+      if (Curry._2(p, param[/* v */1], param[/* d */2]) && for_all(p, param[/* l */0])) {
+        _param = param[/* r */3];
         continue ;
       } else {
         return false;
@@ -680,10 +680,10 @@ function exists(p, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      if (Curry._2(p, param.v, param.d) || exists(p, param.l)) {
+      if (Curry._2(p, param[/* v */1], param[/* d */2]) || exists(p, param[/* l */0])) {
         return true;
       } else {
-        _param = param.r;
+        _param = param[/* r */3];
         continue ;
       }
     } else {
@@ -694,7 +694,7 @@ function exists(p, _param) {
 
 function add_min_binding(k, x, param) {
   if (param) {
-    return bal(add_min_binding(k, x, param.l), param.v, param.d, param.r);
+    return bal(add_min_binding(k, x, param[/* l */0]), param[/* v */1], param[/* d */2], param[/* r */3]);
   } else {
     return singleton(k, x);
   }
@@ -702,7 +702,7 @@ function add_min_binding(k, x, param) {
 
 function add_max_binding(k, x, param) {
   if (param) {
-    return bal(param.l, param.v, param.d, add_max_binding(k, x, param.r));
+    return bal(param[/* l */0], param[/* v */1], param[/* d */2], add_max_binding(k, x, param[/* r */3]));
   } else {
     return singleton(k, x);
   }
@@ -711,12 +711,12 @@ function add_max_binding(k, x, param) {
 function join(l, v, d, r) {
   if (l) {
     if (r) {
-      var rh = r.h;
-      var lh = l.h;
+      var rh = r[/* h */4];
+      var lh = l[/* h */4];
       if (lh > (rh + 2 | 0)) {
-        return bal(l.l, l.v, l.d, join(l.r, v, d, r));
+        return bal(l[/* l */0], l[/* v */1], l[/* d */2], join(l[/* r */3], v, d, r));
       } else if (rh > (lh + 2 | 0)) {
-        return bal(join(l, v, d, r.l), r.v, r.d, r.r);
+        return bal(join(l, v, d, r[/* l */0]), r[/* v */1], r[/* d */2], r[/* r */3]);
       } else {
         return create(l, v, d, r);
       }
@@ -751,10 +751,10 @@ function concat_or_join(t1, v, d, t2) {
 
 function split(x, param) {
   if (param) {
-    var r = param.r;
-    var d = param.d;
-    var v = param.v;
-    var l = param.l;
+    var r = param[/* r */3];
+    var d = param[/* d */2];
+    var v = param[/* v */1];
+    var l = param[/* l */0];
     var c = Caml_primitive.caml_string_compare(x, v);
     if (c === 0) {
       return /* tuple */[
@@ -788,19 +788,19 @@ function split(x, param) {
 
 function merge$1(f, s1, s2) {
   if (s1) {
-    var v1 = s1.v;
-    if (s1.h >= height(s2)) {
+    var v1 = s1[/* v */1];
+    if (s1[/* h */4] >= height(s2)) {
       var match = split(v1, s2);
-      return concat_or_join(merge$1(f, s1.l, match[0]), v1, Curry._3(f, v1, Caml_option.some(s1.d), match[1]), merge$1(f, s1.r, match[2]));
+      return concat_or_join(merge$1(f, s1[/* l */0], match[0]), v1, Curry._3(f, v1, Caml_option.some(s1[/* d */2]), match[1]), merge$1(f, s1[/* r */3], match[2]));
     }
     
   } else if (!s2) {
     return /* Empty */0;
   }
   if (s2) {
-    var v2 = s2.v;
+    var v2 = s2[/* v */1];
     var match$1 = split(v2, s1);
-    return concat_or_join(merge$1(f, match$1[0], s2.l), v2, Curry._3(f, v2, match$1[1], Caml_option.some(s2.d)), merge$1(f, match$1[2], s2.r));
+    return concat_or_join(merge$1(f, match$1[0], s2[/* l */0]), v2, Curry._3(f, v2, match$1[1], Caml_option.some(s2[/* d */2])), merge$1(f, match$1[2], s2[/* r */3]));
   } else {
     throw [
           Caml_builtin_exceptions.assert_failure,
@@ -816,15 +816,15 @@ function merge$1(f, s1, s2) {
 function union(f, s1, s2) {
   if (s1) {
     if (s2) {
-      var d2 = s2.d;
-      var v2 = s2.v;
-      var d1 = s1.d;
-      var v1 = s1.v;
-      if (s1.h >= s2.h) {
+      var d2 = s2[/* d */2];
+      var v2 = s2[/* v */1];
+      var d1 = s1[/* d */2];
+      var v1 = s1[/* v */1];
+      if (s1[/* h */4] >= s2[/* h */4]) {
         var match = split(v1, s2);
         var d2$1 = match[1];
-        var l = union(f, s1.l, match[0]);
-        var r = union(f, s1.r, match[2]);
+        var l = union(f, s1[/* l */0], match[0]);
+        var r = union(f, s1[/* r */3], match[2]);
         if (d2$1 !== undefined) {
           return concat_or_join(l, v1, Curry._3(f, v1, d1, Caml_option.valFromOption(d2$1)), r);
         } else {
@@ -833,8 +833,8 @@ function union(f, s1, s2) {
       } else {
         var match$1 = split(v2, s1);
         var d1$1 = match$1[1];
-        var l$1 = union(f, match$1[0], s2.l);
-        var r$1 = union(f, match$1[2], s2.r);
+        var l$1 = union(f, match$1[0], s2[/* l */0]);
+        var r$1 = union(f, match$1[2], s2[/* r */3]);
         if (d1$1 !== undefined) {
           return concat_or_join(l$1, v2, Curry._3(f, v2, Caml_option.valFromOption(d1$1), d2), r$1);
         } else {
@@ -851,10 +851,10 @@ function union(f, s1, s2) {
 
 function filter(p, m) {
   if (m) {
-    var r = m.r;
-    var d = m.d;
-    var v = m.v;
-    var l = m.l;
+    var r = m[/* r */3];
+    var d = m[/* d */2];
+    var v = m[/* v */1];
+    var l = m[/* l */0];
     var l$prime = filter(p, l);
     var pvd = Curry._2(p, v, d);
     var r$prime = filter(p, r);
@@ -874,13 +874,13 @@ function filter(p, m) {
 
 function partition(p, param) {
   if (param) {
-    var d = param.d;
-    var v = param.v;
-    var match = partition(p, param.l);
+    var d = param[/* d */2];
+    var v = param[/* v */1];
+    var match = partition(p, param[/* l */0]);
     var lf = match[1];
     var lt = match[0];
     var pvd = Curry._2(p, v, d);
-    var match$1 = partition(p, param.r);
+    var match$1 = partition(p, param[/* r */3]);
     var rf = match$1[1];
     var rt = match$1[0];
     if (pvd) {
@@ -908,12 +908,12 @@ function cons_enum(_m, _e) {
     var m = _m;
     if (m) {
       _e = /* More */[
-        m.v,
-        m.d,
-        m.r,
+        m[/* v */1],
+        m[/* d */2],
+        m[/* r */3],
         e
       ];
-      _m = m.l;
+      _m = m[/* l */0];
       continue ;
     } else {
       return e;
@@ -977,7 +977,7 @@ function equal(cmp, m1, m2) {
 
 function cardinal(param) {
   if (param) {
-    return (cardinal(param.l) + 1 | 0) + cardinal(param.r) | 0;
+    return (cardinal(param[/* l */0]) + 1 | 0) + cardinal(param[/* r */3]) | 0;
   } else {
     return 0;
   }
@@ -988,13 +988,13 @@ function bindings_aux(_accu, _param) {
     var param = _param;
     var accu = _accu;
     if (param) {
-      _param = param.l;
+      _param = param[/* l */0];
       _accu = /* :: */[
         /* tuple */[
-          param.v,
-          param.d
+          param[/* v */1],
+          param[/* d */2]
         ],
-        bindings_aux(accu, param.r)
+        bindings_aux(accu, param[/* r */3])
       ];
       continue ;
     } else {
@@ -1046,7 +1046,7 @@ var Vars = {
 
 function height$1(param) {
   if (param) {
-    return param.h;
+    return param[/* h */4];
   } else {
     return 0;
   }
@@ -1075,18 +1075,18 @@ function singleton$1(x, d) {
 }
 
 function bal$1(l, x, d, r) {
-  var hl = l ? l.h : 0;
-  var hr = r ? r.h : 0;
+  var hl = l ? l[/* h */4] : 0;
+  var hr = r ? r[/* h */4] : 0;
   if (hl > (hr + 2 | 0)) {
     if (l) {
-      var lr = l.r;
-      var ld = l.d;
-      var lv = l.v;
-      var ll = l.l;
+      var lr = l[/* r */3];
+      var ld = l[/* d */2];
+      var lv = l[/* v */1];
+      var ll = l[/* l */0];
       if (height$1(ll) >= height$1(lr)) {
         return create$1(ll, lv, ld, create$1(lr, x, d, r));
       } else if (lr) {
-        return create$1(create$1(ll, lv, ld, lr.l), lr.v, lr.d, create$1(lr.r, x, d, r));
+        return create$1(create$1(ll, lv, ld, lr[/* l */0]), lr[/* v */1], lr[/* d */2], create$1(lr[/* r */3], x, d, r));
       } else {
         throw [
               Caml_builtin_exceptions.invalid_argument,
@@ -1101,14 +1101,14 @@ function bal$1(l, x, d, r) {
     }
   } else if (hr > (hl + 2 | 0)) {
     if (r) {
-      var rr = r.r;
-      var rd = r.d;
-      var rv = r.v;
-      var rl = r.l;
+      var rr = r[/* r */3];
+      var rd = r[/* d */2];
+      var rv = r[/* v */1];
+      var rl = r[/* l */0];
       if (height$1(rr) >= height$1(rl)) {
         return create$1(create$1(l, x, d, rl), rv, rd, rr);
       } else if (rl) {
-        return create$1(create$1(l, x, d, rl.l), rl.v, rl.d, create$1(rl.r, rv, rd, rr));
+        return create$1(create$1(l, x, d, rl[/* l */0]), rl[/* v */1], rl[/* d */2], create$1(rl[/* r */3], rv, rd, rr));
       } else {
         throw [
               Caml_builtin_exceptions.invalid_argument,
@@ -1142,10 +1142,10 @@ function is_empty$1(param) {
 
 function add$1(x, data, m) {
   if (m) {
-    var r = m.r;
-    var d = m.d;
-    var v = m.v;
-    var l = m.l;
+    var r = m[/* r */3];
+    var d = m[/* d */2];
+    var v = m[/* v */1];
+    var l = m[/* l */0];
     var c = Caml_primitive.caml_string_compare(x, v);
     if (c === 0) {
       if (d === data) {
@@ -1156,7 +1156,7 @@ function add$1(x, data, m) {
                 /* v */x,
                 /* d */data,
                 /* r */r,
-                /* h */m.h
+                /* h */m[/* h */4]
               ];
       }
     } else if (c < 0) {
@@ -1189,11 +1189,11 @@ function find$1(x, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      var c = Caml_primitive.caml_string_compare(x, param.v);
+      var c = Caml_primitive.caml_string_compare(x, param[/* v */1]);
       if (c === 0) {
-        return param.d;
+        return param[/* d */2];
       } else {
-        _param = c < 0 ? param.l : param.r;
+        _param = c < 0 ? param[/* l */0] : param[/* r */3];
         continue ;
       }
     } else {
@@ -1206,25 +1206,25 @@ function find_first$1(f, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      var v = param.v;
+      var v = param[/* v */1];
       if (Curry._1(f, v)) {
         var _v0 = v;
-        var _d0 = param.d;
+        var _d0 = param[/* d */2];
         var f$1 = f;
-        var _param$1 = param.l;
+        var _param$1 = param[/* l */0];
         while(true) {
           var param$1 = _param$1;
           var d0 = _d0;
           var v0 = _v0;
           if (param$1) {
-            var v$1 = param$1.v;
+            var v$1 = param$1[/* v */1];
             if (Curry._1(f$1, v$1)) {
-              _param$1 = param$1.l;
-              _d0 = param$1.d;
+              _param$1 = param$1[/* l */0];
+              _d0 = param$1[/* d */2];
               _v0 = v$1;
               continue ;
             } else {
-              _param$1 = param$1.r;
+              _param$1 = param$1[/* r */3];
               continue ;
             }
           } else {
@@ -1235,7 +1235,7 @@ function find_first$1(f, _param) {
           }
         };
       } else {
-        _param = param.r;
+        _param = param[/* r */3];
         continue ;
       }
     } else {
@@ -1248,25 +1248,25 @@ function find_first_opt$1(f, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      var v = param.v;
+      var v = param[/* v */1];
       if (Curry._1(f, v)) {
         var _v0 = v;
-        var _d0 = param.d;
+        var _d0 = param[/* d */2];
         var f$1 = f;
-        var _param$1 = param.l;
+        var _param$1 = param[/* l */0];
         while(true) {
           var param$1 = _param$1;
           var d0 = _d0;
           var v0 = _v0;
           if (param$1) {
-            var v$1 = param$1.v;
+            var v$1 = param$1[/* v */1];
             if (Curry._1(f$1, v$1)) {
-              _param$1 = param$1.l;
-              _d0 = param$1.d;
+              _param$1 = param$1[/* l */0];
+              _d0 = param$1[/* d */2];
               _v0 = v$1;
               continue ;
             } else {
-              _param$1 = param$1.r;
+              _param$1 = param$1[/* r */3];
               continue ;
             }
           } else {
@@ -1277,7 +1277,7 @@ function find_first_opt$1(f, _param) {
           }
         };
       } else {
-        _param = param.r;
+        _param = param[/* r */3];
         continue ;
       }
     } else {
@@ -1290,25 +1290,25 @@ function find_last$1(f, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      var v = param.v;
+      var v = param[/* v */1];
       if (Curry._1(f, v)) {
         var _v0 = v;
-        var _d0 = param.d;
+        var _d0 = param[/* d */2];
         var f$1 = f;
-        var _param$1 = param.r;
+        var _param$1 = param[/* r */3];
         while(true) {
           var param$1 = _param$1;
           var d0 = _d0;
           var v0 = _v0;
           if (param$1) {
-            var v$1 = param$1.v;
+            var v$1 = param$1[/* v */1];
             if (Curry._1(f$1, v$1)) {
-              _param$1 = param$1.r;
-              _d0 = param$1.d;
+              _param$1 = param$1[/* r */3];
+              _d0 = param$1[/* d */2];
               _v0 = v$1;
               continue ;
             } else {
-              _param$1 = param$1.l;
+              _param$1 = param$1[/* l */0];
               continue ;
             }
           } else {
@@ -1319,7 +1319,7 @@ function find_last$1(f, _param) {
           }
         };
       } else {
-        _param = param.l;
+        _param = param[/* l */0];
         continue ;
       }
     } else {
@@ -1332,25 +1332,25 @@ function find_last_opt$1(f, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      var v = param.v;
+      var v = param[/* v */1];
       if (Curry._1(f, v)) {
         var _v0 = v;
-        var _d0 = param.d;
+        var _d0 = param[/* d */2];
         var f$1 = f;
-        var _param$1 = param.r;
+        var _param$1 = param[/* r */3];
         while(true) {
           var param$1 = _param$1;
           var d0 = _d0;
           var v0 = _v0;
           if (param$1) {
-            var v$1 = param$1.v;
+            var v$1 = param$1[/* v */1];
             if (Curry._1(f$1, v$1)) {
-              _param$1 = param$1.r;
-              _d0 = param$1.d;
+              _param$1 = param$1[/* r */3];
+              _d0 = param$1[/* d */2];
               _v0 = v$1;
               continue ;
             } else {
-              _param$1 = param$1.l;
+              _param$1 = param$1[/* l */0];
               continue ;
             }
           } else {
@@ -1361,7 +1361,7 @@ function find_last_opt$1(f, _param) {
           }
         };
       } else {
-        _param = param.l;
+        _param = param[/* l */0];
         continue ;
       }
     } else {
@@ -1374,11 +1374,11 @@ function find_opt$1(x, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      var c = Caml_primitive.caml_string_compare(x, param.v);
+      var c = Caml_primitive.caml_string_compare(x, param[/* v */1]);
       if (c === 0) {
-        return Caml_option.some(param.d);
+        return Caml_option.some(param[/* d */2]);
       } else {
-        _param = c < 0 ? param.l : param.r;
+        _param = c < 0 ? param[/* l */0] : param[/* r */3];
         continue ;
       }
     } else {
@@ -1391,11 +1391,11 @@ function mem$1(x, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      var c = Caml_primitive.caml_string_compare(x, param.v);
+      var c = Caml_primitive.caml_string_compare(x, param[/* v */1]);
       if (c === 0) {
         return true;
       } else {
-        _param = c < 0 ? param.l : param.r;
+        _param = c < 0 ? param[/* l */0] : param[/* r */3];
         continue ;
       }
     } else {
@@ -1408,14 +1408,14 @@ function min_binding$1(_param) {
   while(true) {
     var param = _param;
     if (param) {
-      var l = param.l;
+      var l = param[/* l */0];
       if (l) {
         _param = l;
         continue ;
       } else {
         return /* tuple */[
-                param.v,
-                param.d
+                param[/* v */1],
+                param[/* d */2]
               ];
       }
     } else {
@@ -1428,14 +1428,14 @@ function min_binding_opt$1(_param) {
   while(true) {
     var param = _param;
     if (param) {
-      var l = param.l;
+      var l = param[/* l */0];
       if (l) {
         _param = l;
         continue ;
       } else {
         return /* tuple */[
-                param.v,
-                param.d
+                param[/* v */1],
+                param[/* d */2]
               ];
       }
     } else {
@@ -1448,14 +1448,14 @@ function max_binding$1(_param) {
   while(true) {
     var param = _param;
     if (param) {
-      var r = param.r;
+      var r = param[/* r */3];
       if (r) {
         _param = r;
         continue ;
       } else {
         return /* tuple */[
-                param.v,
-                param.d
+                param[/* v */1],
+                param[/* d */2]
               ];
       }
     } else {
@@ -1468,14 +1468,14 @@ function max_binding_opt$1(_param) {
   while(true) {
     var param = _param;
     if (param) {
-      var r = param.r;
+      var r = param[/* r */3];
       if (r) {
         _param = r;
         continue ;
       } else {
         return /* tuple */[
-                param.v,
-                param.d
+                param[/* v */1],
+                param[/* d */2]
               ];
       }
     } else {
@@ -1486,11 +1486,11 @@ function max_binding_opt$1(_param) {
 
 function remove_min_binding$1(param) {
   if (param) {
-    var l = param.l;
+    var l = param[/* l */0];
     if (l) {
-      return bal$1(remove_min_binding$1(l), param.v, param.d, param.r);
+      return bal$1(remove_min_binding$1(l), param[/* v */1], param[/* d */2], param[/* r */3]);
     } else {
-      return param.r;
+      return param[/* r */3];
     }
   } else {
     throw [
@@ -1515,10 +1515,10 @@ function merge$2(t1, t2) {
 
 function remove$1(x, m) {
   if (m) {
-    var r = m.r;
-    var d = m.d;
-    var v = m.v;
-    var l = m.l;
+    var r = m[/* r */3];
+    var d = m[/* d */2];
+    var v = m[/* v */1];
+    var l = m[/* l */0];
     var c = Caml_primitive.caml_string_compare(x, v);
     if (c === 0) {
       return merge$2(l, r);
@@ -1544,10 +1544,10 @@ function remove$1(x, m) {
 
 function update$1(x, f, m) {
   if (m) {
-    var r = m.r;
-    var d = m.d;
-    var v = m.v;
-    var l = m.l;
+    var r = m[/* r */3];
+    var d = m[/* d */2];
+    var v = m[/* v */1];
+    var l = m[/* l */0];
     var c = Caml_primitive.caml_string_compare(x, v);
     if (c === 0) {
       var match = Curry._1(f, Caml_option.some(d));
@@ -1561,7 +1561,7 @@ function update$1(x, f, m) {
                   /* v */x,
                   /* d */data,
                   /* r */r,
-                  /* h */m.h
+                  /* h */m[/* h */4]
                 ];
         }
       } else {
@@ -1602,9 +1602,9 @@ function iter$1(f, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      iter$1(f, param.l);
-      Curry._2(f, param.v, param.d);
-      _param = param.r;
+      iter$1(f, param[/* l */0]);
+      Curry._2(f, param[/* v */1], param[/* d */2]);
+      _param = param[/* r */3];
       continue ;
     } else {
       return /* () */0;
@@ -1614,15 +1614,15 @@ function iter$1(f, _param) {
 
 function map$1(f, param) {
   if (param) {
-    var l$prime = map$1(f, param.l);
-    var d$prime = Curry._1(f, param.d);
-    var r$prime = map$1(f, param.r);
+    var l$prime = map$1(f, param[/* l */0]);
+    var d$prime = Curry._1(f, param[/* d */2]);
+    var r$prime = map$1(f, param[/* r */3]);
     return /* Node */[
             /* l */l$prime,
-            /* v */param.v,
+            /* v */param[/* v */1],
             /* d */d$prime,
             /* r */r$prime,
-            /* h */param.h
+            /* h */param[/* h */4]
           ];
   } else {
     return /* Empty */0;
@@ -1631,16 +1631,16 @@ function map$1(f, param) {
 
 function mapi$1(f, param) {
   if (param) {
-    var v = param.v;
-    var l$prime = mapi$1(f, param.l);
-    var d$prime = Curry._2(f, v, param.d);
-    var r$prime = mapi$1(f, param.r);
+    var v = param[/* v */1];
+    var l$prime = mapi$1(f, param[/* l */0]);
+    var d$prime = Curry._2(f, v, param[/* d */2]);
+    var r$prime = mapi$1(f, param[/* r */3]);
     return /* Node */[
             /* l */l$prime,
             /* v */v,
             /* d */d$prime,
             /* r */r$prime,
-            /* h */param.h
+            /* h */param[/* h */4]
           ];
   } else {
     return /* Empty */0;
@@ -1652,8 +1652,8 @@ function fold$1(f, _m, _accu) {
     var accu = _accu;
     var m = _m;
     if (m) {
-      _accu = Curry._3(f, m.v, m.d, fold$1(f, m.l, accu));
-      _m = m.r;
+      _accu = Curry._3(f, m[/* v */1], m[/* d */2], fold$1(f, m[/* l */0], accu));
+      _m = m[/* r */3];
       continue ;
     } else {
       return accu;
@@ -1665,8 +1665,8 @@ function for_all$1(p, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      if (Curry._2(p, param.v, param.d) && for_all$1(p, param.l)) {
-        _param = param.r;
+      if (Curry._2(p, param[/* v */1], param[/* d */2]) && for_all$1(p, param[/* l */0])) {
+        _param = param[/* r */3];
         continue ;
       } else {
         return false;
@@ -1681,10 +1681,10 @@ function exists$1(p, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      if (Curry._2(p, param.v, param.d) || exists$1(p, param.l)) {
+      if (Curry._2(p, param[/* v */1], param[/* d */2]) || exists$1(p, param[/* l */0])) {
         return true;
       } else {
-        _param = param.r;
+        _param = param[/* r */3];
         continue ;
       }
     } else {
@@ -1695,7 +1695,7 @@ function exists$1(p, _param) {
 
 function add_min_binding$1(k, x, param) {
   if (param) {
-    return bal$1(add_min_binding$1(k, x, param.l), param.v, param.d, param.r);
+    return bal$1(add_min_binding$1(k, x, param[/* l */0]), param[/* v */1], param[/* d */2], param[/* r */3]);
   } else {
     return singleton$1(k, x);
   }
@@ -1703,7 +1703,7 @@ function add_min_binding$1(k, x, param) {
 
 function add_max_binding$1(k, x, param) {
   if (param) {
-    return bal$1(param.l, param.v, param.d, add_max_binding$1(k, x, param.r));
+    return bal$1(param[/* l */0], param[/* v */1], param[/* d */2], add_max_binding$1(k, x, param[/* r */3]));
   } else {
     return singleton$1(k, x);
   }
@@ -1712,12 +1712,12 @@ function add_max_binding$1(k, x, param) {
 function join$1(l, v, d, r) {
   if (l) {
     if (r) {
-      var rh = r.h;
-      var lh = l.h;
+      var rh = r[/* h */4];
+      var lh = l[/* h */4];
       if (lh > (rh + 2 | 0)) {
-        return bal$1(l.l, l.v, l.d, join$1(l.r, v, d, r));
+        return bal$1(l[/* l */0], l[/* v */1], l[/* d */2], join$1(l[/* r */3], v, d, r));
       } else if (rh > (lh + 2 | 0)) {
-        return bal$1(join$1(l, v, d, r.l), r.v, r.d, r.r);
+        return bal$1(join$1(l, v, d, r[/* l */0]), r[/* v */1], r[/* d */2], r[/* r */3]);
       } else {
         return create$1(l, v, d, r);
       }
@@ -1752,10 +1752,10 @@ function concat_or_join$1(t1, v, d, t2) {
 
 function split$1(x, param) {
   if (param) {
-    var r = param.r;
-    var d = param.d;
-    var v = param.v;
-    var l = param.l;
+    var r = param[/* r */3];
+    var d = param[/* d */2];
+    var v = param[/* v */1];
+    var l = param[/* l */0];
     var c = Caml_primitive.caml_string_compare(x, v);
     if (c === 0) {
       return /* tuple */[
@@ -1789,19 +1789,19 @@ function split$1(x, param) {
 
 function merge$3(f, s1, s2) {
   if (s1) {
-    var v1 = s1.v;
-    if (s1.h >= height$1(s2)) {
+    var v1 = s1[/* v */1];
+    if (s1[/* h */4] >= height$1(s2)) {
       var match = split$1(v1, s2);
-      return concat_or_join$1(merge$3(f, s1.l, match[0]), v1, Curry._3(f, v1, Caml_option.some(s1.d), match[1]), merge$3(f, s1.r, match[2]));
+      return concat_or_join$1(merge$3(f, s1[/* l */0], match[0]), v1, Curry._3(f, v1, Caml_option.some(s1[/* d */2]), match[1]), merge$3(f, s1[/* r */3], match[2]));
     }
     
   } else if (!s2) {
     return /* Empty */0;
   }
   if (s2) {
-    var v2 = s2.v;
+    var v2 = s2[/* v */1];
     var match$1 = split$1(v2, s1);
-    return concat_or_join$1(merge$3(f, match$1[0], s2.l), v2, Curry._3(f, v2, match$1[1], Caml_option.some(s2.d)), merge$3(f, match$1[2], s2.r));
+    return concat_or_join$1(merge$3(f, match$1[0], s2[/* l */0]), v2, Curry._3(f, v2, match$1[1], Caml_option.some(s2[/* d */2])), merge$3(f, match$1[2], s2[/* r */3]));
   } else {
     throw [
           Caml_builtin_exceptions.assert_failure,
@@ -1817,15 +1817,15 @@ function merge$3(f, s1, s2) {
 function union$1(f, s1, s2) {
   if (s1) {
     if (s2) {
-      var d2 = s2.d;
-      var v2 = s2.v;
-      var d1 = s1.d;
-      var v1 = s1.v;
-      if (s1.h >= s2.h) {
+      var d2 = s2[/* d */2];
+      var v2 = s2[/* v */1];
+      var d1 = s1[/* d */2];
+      var v1 = s1[/* v */1];
+      if (s1[/* h */4] >= s2[/* h */4]) {
         var match = split$1(v1, s2);
         var d2$1 = match[1];
-        var l = union$1(f, s1.l, match[0]);
-        var r = union$1(f, s1.r, match[2]);
+        var l = union$1(f, s1[/* l */0], match[0]);
+        var r = union$1(f, s1[/* r */3], match[2]);
         if (d2$1 !== undefined) {
           return concat_or_join$1(l, v1, Curry._3(f, v1, d1, Caml_option.valFromOption(d2$1)), r);
         } else {
@@ -1834,8 +1834,8 @@ function union$1(f, s1, s2) {
       } else {
         var match$1 = split$1(v2, s1);
         var d1$1 = match$1[1];
-        var l$1 = union$1(f, match$1[0], s2.l);
-        var r$1 = union$1(f, match$1[2], s2.r);
+        var l$1 = union$1(f, match$1[0], s2[/* l */0]);
+        var r$1 = union$1(f, match$1[2], s2[/* r */3]);
         if (d1$1 !== undefined) {
           return concat_or_join$1(l$1, v2, Curry._3(f, v2, Caml_option.valFromOption(d1$1), d2), r$1);
         } else {
@@ -1852,10 +1852,10 @@ function union$1(f, s1, s2) {
 
 function filter$1(p, m) {
   if (m) {
-    var r = m.r;
-    var d = m.d;
-    var v = m.v;
-    var l = m.l;
+    var r = m[/* r */3];
+    var d = m[/* d */2];
+    var v = m[/* v */1];
+    var l = m[/* l */0];
     var l$prime = filter$1(p, l);
     var pvd = Curry._2(p, v, d);
     var r$prime = filter$1(p, r);
@@ -1875,13 +1875,13 @@ function filter$1(p, m) {
 
 function partition$1(p, param) {
   if (param) {
-    var d = param.d;
-    var v = param.v;
-    var match = partition$1(p, param.l);
+    var d = param[/* d */2];
+    var v = param[/* v */1];
+    var match = partition$1(p, param[/* l */0]);
     var lf = match[1];
     var lt = match[0];
     var pvd = Curry._2(p, v, d);
-    var match$1 = partition$1(p, param.r);
+    var match$1 = partition$1(p, param[/* r */3]);
     var rf = match$1[1];
     var rt = match$1[0];
     if (pvd) {
@@ -1909,12 +1909,12 @@ function cons_enum$1(_m, _e) {
     var m = _m;
     if (m) {
       _e = /* More */[
-        m.v,
-        m.d,
-        m.r,
+        m[/* v */1],
+        m[/* d */2],
+        m[/* r */3],
         e
       ];
-      _m = m.l;
+      _m = m[/* l */0];
       continue ;
     } else {
       return e;
@@ -1978,7 +1978,7 @@ function equal$1(cmp, m1, m2) {
 
 function cardinal$1(param) {
   if (param) {
-    return (cardinal$1(param.l) + 1 | 0) + cardinal$1(param.r) | 0;
+    return (cardinal$1(param[/* l */0]) + 1 | 0) + cardinal$1(param[/* r */3]) | 0;
   } else {
     return 0;
   }
@@ -1989,13 +1989,13 @@ function bindings_aux$1(_accu, _param) {
     var param = _param;
     var accu = _accu;
     if (param) {
-      _param = param.l;
+      _param = param[/* l */0];
       _accu = /* :: */[
         /* tuple */[
-          param.v,
-          param.d
+          param[/* v */1],
+          param[/* d */2]
         ],
-        bindings_aux$1(accu, param.r)
+        bindings_aux$1(accu, param[/* r */3])
       ];
       continue ;
     } else {
@@ -2047,7 +2047,7 @@ var Meths = {
 
 function height$2(param) {
   if (param) {
-    return param.h;
+    return param[/* h */4];
   } else {
     return 0;
   }
@@ -2076,18 +2076,18 @@ function singleton$2(x, d) {
 }
 
 function bal$2(l, x, d, r) {
-  var hl = l ? l.h : 0;
-  var hr = r ? r.h : 0;
+  var hl = l ? l[/* h */4] : 0;
+  var hr = r ? r[/* h */4] : 0;
   if (hl > (hr + 2 | 0)) {
     if (l) {
-      var lr = l.r;
-      var ld = l.d;
-      var lv = l.v;
-      var ll = l.l;
+      var lr = l[/* r */3];
+      var ld = l[/* d */2];
+      var lv = l[/* v */1];
+      var ll = l[/* l */0];
       if (height$2(ll) >= height$2(lr)) {
         return create$2(ll, lv, ld, create$2(lr, x, d, r));
       } else if (lr) {
-        return create$2(create$2(ll, lv, ld, lr.l), lr.v, lr.d, create$2(lr.r, x, d, r));
+        return create$2(create$2(ll, lv, ld, lr[/* l */0]), lr[/* v */1], lr[/* d */2], create$2(lr[/* r */3], x, d, r));
       } else {
         throw [
               Caml_builtin_exceptions.invalid_argument,
@@ -2102,14 +2102,14 @@ function bal$2(l, x, d, r) {
     }
   } else if (hr > (hl + 2 | 0)) {
     if (r) {
-      var rr = r.r;
-      var rd = r.d;
-      var rv = r.v;
-      var rl = r.l;
+      var rr = r[/* r */3];
+      var rd = r[/* d */2];
+      var rv = r[/* v */1];
+      var rl = r[/* l */0];
       if (height$2(rr) >= height$2(rl)) {
         return create$2(create$2(l, x, d, rl), rv, rd, rr);
       } else if (rl) {
-        return create$2(create$2(l, x, d, rl.l), rl.v, rl.d, create$2(rl.r, rv, rd, rr));
+        return create$2(create$2(l, x, d, rl[/* l */0]), rl[/* v */1], rl[/* d */2], create$2(rl[/* r */3], rv, rd, rr));
       } else {
         throw [
               Caml_builtin_exceptions.invalid_argument,
@@ -2143,10 +2143,10 @@ function is_empty$2(param) {
 
 function add$2(x, data, m) {
   if (m) {
-    var r = m.r;
-    var d = m.d;
-    var v = m.v;
-    var l = m.l;
+    var r = m[/* r */3];
+    var d = m[/* d */2];
+    var v = m[/* v */1];
+    var l = m[/* l */0];
     var c = Caml_primitive.caml_int_compare(x, v);
     if (c === 0) {
       if (d === data) {
@@ -2157,7 +2157,7 @@ function add$2(x, data, m) {
                 /* v */x,
                 /* d */data,
                 /* r */r,
-                /* h */m.h
+                /* h */m[/* h */4]
               ];
       }
     } else if (c < 0) {
@@ -2190,11 +2190,11 @@ function find$2(x, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      var c = Caml_primitive.caml_int_compare(x, param.v);
+      var c = Caml_primitive.caml_int_compare(x, param[/* v */1]);
       if (c === 0) {
-        return param.d;
+        return param[/* d */2];
       } else {
-        _param = c < 0 ? param.l : param.r;
+        _param = c < 0 ? param[/* l */0] : param[/* r */3];
         continue ;
       }
     } else {
@@ -2207,25 +2207,25 @@ function find_first$2(f, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      var v = param.v;
+      var v = param[/* v */1];
       if (Curry._1(f, v)) {
         var _v0 = v;
-        var _d0 = param.d;
+        var _d0 = param[/* d */2];
         var f$1 = f;
-        var _param$1 = param.l;
+        var _param$1 = param[/* l */0];
         while(true) {
           var param$1 = _param$1;
           var d0 = _d0;
           var v0 = _v0;
           if (param$1) {
-            var v$1 = param$1.v;
+            var v$1 = param$1[/* v */1];
             if (Curry._1(f$1, v$1)) {
-              _param$1 = param$1.l;
-              _d0 = param$1.d;
+              _param$1 = param$1[/* l */0];
+              _d0 = param$1[/* d */2];
               _v0 = v$1;
               continue ;
             } else {
-              _param$1 = param$1.r;
+              _param$1 = param$1[/* r */3];
               continue ;
             }
           } else {
@@ -2236,7 +2236,7 @@ function find_first$2(f, _param) {
           }
         };
       } else {
-        _param = param.r;
+        _param = param[/* r */3];
         continue ;
       }
     } else {
@@ -2249,25 +2249,25 @@ function find_first_opt$2(f, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      var v = param.v;
+      var v = param[/* v */1];
       if (Curry._1(f, v)) {
         var _v0 = v;
-        var _d0 = param.d;
+        var _d0 = param[/* d */2];
         var f$1 = f;
-        var _param$1 = param.l;
+        var _param$1 = param[/* l */0];
         while(true) {
           var param$1 = _param$1;
           var d0 = _d0;
           var v0 = _v0;
           if (param$1) {
-            var v$1 = param$1.v;
+            var v$1 = param$1[/* v */1];
             if (Curry._1(f$1, v$1)) {
-              _param$1 = param$1.l;
-              _d0 = param$1.d;
+              _param$1 = param$1[/* l */0];
+              _d0 = param$1[/* d */2];
               _v0 = v$1;
               continue ;
             } else {
-              _param$1 = param$1.r;
+              _param$1 = param$1[/* r */3];
               continue ;
             }
           } else {
@@ -2278,7 +2278,7 @@ function find_first_opt$2(f, _param) {
           }
         };
       } else {
-        _param = param.r;
+        _param = param[/* r */3];
         continue ;
       }
     } else {
@@ -2291,25 +2291,25 @@ function find_last$2(f, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      var v = param.v;
+      var v = param[/* v */1];
       if (Curry._1(f, v)) {
         var _v0 = v;
-        var _d0 = param.d;
+        var _d0 = param[/* d */2];
         var f$1 = f;
-        var _param$1 = param.r;
+        var _param$1 = param[/* r */3];
         while(true) {
           var param$1 = _param$1;
           var d0 = _d0;
           var v0 = _v0;
           if (param$1) {
-            var v$1 = param$1.v;
+            var v$1 = param$1[/* v */1];
             if (Curry._1(f$1, v$1)) {
-              _param$1 = param$1.r;
-              _d0 = param$1.d;
+              _param$1 = param$1[/* r */3];
+              _d0 = param$1[/* d */2];
               _v0 = v$1;
               continue ;
             } else {
-              _param$1 = param$1.l;
+              _param$1 = param$1[/* l */0];
               continue ;
             }
           } else {
@@ -2320,7 +2320,7 @@ function find_last$2(f, _param) {
           }
         };
       } else {
-        _param = param.l;
+        _param = param[/* l */0];
         continue ;
       }
     } else {
@@ -2333,25 +2333,25 @@ function find_last_opt$2(f, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      var v = param.v;
+      var v = param[/* v */1];
       if (Curry._1(f, v)) {
         var _v0 = v;
-        var _d0 = param.d;
+        var _d0 = param[/* d */2];
         var f$1 = f;
-        var _param$1 = param.r;
+        var _param$1 = param[/* r */3];
         while(true) {
           var param$1 = _param$1;
           var d0 = _d0;
           var v0 = _v0;
           if (param$1) {
-            var v$1 = param$1.v;
+            var v$1 = param$1[/* v */1];
             if (Curry._1(f$1, v$1)) {
-              _param$1 = param$1.r;
-              _d0 = param$1.d;
+              _param$1 = param$1[/* r */3];
+              _d0 = param$1[/* d */2];
               _v0 = v$1;
               continue ;
             } else {
-              _param$1 = param$1.l;
+              _param$1 = param$1[/* l */0];
               continue ;
             }
           } else {
@@ -2362,7 +2362,7 @@ function find_last_opt$2(f, _param) {
           }
         };
       } else {
-        _param = param.l;
+        _param = param[/* l */0];
         continue ;
       }
     } else {
@@ -2375,11 +2375,11 @@ function find_opt$2(x, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      var c = Caml_primitive.caml_int_compare(x, param.v);
+      var c = Caml_primitive.caml_int_compare(x, param[/* v */1]);
       if (c === 0) {
-        return Caml_option.some(param.d);
+        return Caml_option.some(param[/* d */2]);
       } else {
-        _param = c < 0 ? param.l : param.r;
+        _param = c < 0 ? param[/* l */0] : param[/* r */3];
         continue ;
       }
     } else {
@@ -2392,11 +2392,11 @@ function mem$2(x, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      var c = Caml_primitive.caml_int_compare(x, param.v);
+      var c = Caml_primitive.caml_int_compare(x, param[/* v */1]);
       if (c === 0) {
         return true;
       } else {
-        _param = c < 0 ? param.l : param.r;
+        _param = c < 0 ? param[/* l */0] : param[/* r */3];
         continue ;
       }
     } else {
@@ -2409,14 +2409,14 @@ function min_binding$2(_param) {
   while(true) {
     var param = _param;
     if (param) {
-      var l = param.l;
+      var l = param[/* l */0];
       if (l) {
         _param = l;
         continue ;
       } else {
         return /* tuple */[
-                param.v,
-                param.d
+                param[/* v */1],
+                param[/* d */2]
               ];
       }
     } else {
@@ -2429,14 +2429,14 @@ function min_binding_opt$2(_param) {
   while(true) {
     var param = _param;
     if (param) {
-      var l = param.l;
+      var l = param[/* l */0];
       if (l) {
         _param = l;
         continue ;
       } else {
         return /* tuple */[
-                param.v,
-                param.d
+                param[/* v */1],
+                param[/* d */2]
               ];
       }
     } else {
@@ -2449,14 +2449,14 @@ function max_binding$2(_param) {
   while(true) {
     var param = _param;
     if (param) {
-      var r = param.r;
+      var r = param[/* r */3];
       if (r) {
         _param = r;
         continue ;
       } else {
         return /* tuple */[
-                param.v,
-                param.d
+                param[/* v */1],
+                param[/* d */2]
               ];
       }
     } else {
@@ -2469,14 +2469,14 @@ function max_binding_opt$2(_param) {
   while(true) {
     var param = _param;
     if (param) {
-      var r = param.r;
+      var r = param[/* r */3];
       if (r) {
         _param = r;
         continue ;
       } else {
         return /* tuple */[
-                param.v,
-                param.d
+                param[/* v */1],
+                param[/* d */2]
               ];
       }
     } else {
@@ -2487,11 +2487,11 @@ function max_binding_opt$2(_param) {
 
 function remove_min_binding$2(param) {
   if (param) {
-    var l = param.l;
+    var l = param[/* l */0];
     if (l) {
-      return bal$2(remove_min_binding$2(l), param.v, param.d, param.r);
+      return bal$2(remove_min_binding$2(l), param[/* v */1], param[/* d */2], param[/* r */3]);
     } else {
-      return param.r;
+      return param[/* r */3];
     }
   } else {
     throw [
@@ -2516,10 +2516,10 @@ function merge$4(t1, t2) {
 
 function remove$2(x, m) {
   if (m) {
-    var r = m.r;
-    var d = m.d;
-    var v = m.v;
-    var l = m.l;
+    var r = m[/* r */3];
+    var d = m[/* d */2];
+    var v = m[/* v */1];
+    var l = m[/* l */0];
     var c = Caml_primitive.caml_int_compare(x, v);
     if (c === 0) {
       return merge$4(l, r);
@@ -2545,10 +2545,10 @@ function remove$2(x, m) {
 
 function update$2(x, f, m) {
   if (m) {
-    var r = m.r;
-    var d = m.d;
-    var v = m.v;
-    var l = m.l;
+    var r = m[/* r */3];
+    var d = m[/* d */2];
+    var v = m[/* v */1];
+    var l = m[/* l */0];
     var c = Caml_primitive.caml_int_compare(x, v);
     if (c === 0) {
       var match = Curry._1(f, Caml_option.some(d));
@@ -2562,7 +2562,7 @@ function update$2(x, f, m) {
                   /* v */x,
                   /* d */data,
                   /* r */r,
-                  /* h */m.h
+                  /* h */m[/* h */4]
                 ];
         }
       } else {
@@ -2603,9 +2603,9 @@ function iter$2(f, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      iter$2(f, param.l);
-      Curry._2(f, param.v, param.d);
-      _param = param.r;
+      iter$2(f, param[/* l */0]);
+      Curry._2(f, param[/* v */1], param[/* d */2]);
+      _param = param[/* r */3];
       continue ;
     } else {
       return /* () */0;
@@ -2615,15 +2615,15 @@ function iter$2(f, _param) {
 
 function map$2(f, param) {
   if (param) {
-    var l$prime = map$2(f, param.l);
-    var d$prime = Curry._1(f, param.d);
-    var r$prime = map$2(f, param.r);
+    var l$prime = map$2(f, param[/* l */0]);
+    var d$prime = Curry._1(f, param[/* d */2]);
+    var r$prime = map$2(f, param[/* r */3]);
     return /* Node */[
             /* l */l$prime,
-            /* v */param.v,
+            /* v */param[/* v */1],
             /* d */d$prime,
             /* r */r$prime,
-            /* h */param.h
+            /* h */param[/* h */4]
           ];
   } else {
     return /* Empty */0;
@@ -2632,16 +2632,16 @@ function map$2(f, param) {
 
 function mapi$2(f, param) {
   if (param) {
-    var v = param.v;
-    var l$prime = mapi$2(f, param.l);
-    var d$prime = Curry._2(f, v, param.d);
-    var r$prime = mapi$2(f, param.r);
+    var v = param[/* v */1];
+    var l$prime = mapi$2(f, param[/* l */0]);
+    var d$prime = Curry._2(f, v, param[/* d */2]);
+    var r$prime = mapi$2(f, param[/* r */3]);
     return /* Node */[
             /* l */l$prime,
             /* v */v,
             /* d */d$prime,
             /* r */r$prime,
-            /* h */param.h
+            /* h */param[/* h */4]
           ];
   } else {
     return /* Empty */0;
@@ -2653,8 +2653,8 @@ function fold$2(f, _m, _accu) {
     var accu = _accu;
     var m = _m;
     if (m) {
-      _accu = Curry._3(f, m.v, m.d, fold$2(f, m.l, accu));
-      _m = m.r;
+      _accu = Curry._3(f, m[/* v */1], m[/* d */2], fold$2(f, m[/* l */0], accu));
+      _m = m[/* r */3];
       continue ;
     } else {
       return accu;
@@ -2666,8 +2666,8 @@ function for_all$2(p, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      if (Curry._2(p, param.v, param.d) && for_all$2(p, param.l)) {
-        _param = param.r;
+      if (Curry._2(p, param[/* v */1], param[/* d */2]) && for_all$2(p, param[/* l */0])) {
+        _param = param[/* r */3];
         continue ;
       } else {
         return false;
@@ -2682,10 +2682,10 @@ function exists$2(p, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      if (Curry._2(p, param.v, param.d) || exists$2(p, param.l)) {
+      if (Curry._2(p, param[/* v */1], param[/* d */2]) || exists$2(p, param[/* l */0])) {
         return true;
       } else {
-        _param = param.r;
+        _param = param[/* r */3];
         continue ;
       }
     } else {
@@ -2696,7 +2696,7 @@ function exists$2(p, _param) {
 
 function add_min_binding$2(k, x, param) {
   if (param) {
-    return bal$2(add_min_binding$2(k, x, param.l), param.v, param.d, param.r);
+    return bal$2(add_min_binding$2(k, x, param[/* l */0]), param[/* v */1], param[/* d */2], param[/* r */3]);
   } else {
     return singleton$2(k, x);
   }
@@ -2704,7 +2704,7 @@ function add_min_binding$2(k, x, param) {
 
 function add_max_binding$2(k, x, param) {
   if (param) {
-    return bal$2(param.l, param.v, param.d, add_max_binding$2(k, x, param.r));
+    return bal$2(param[/* l */0], param[/* v */1], param[/* d */2], add_max_binding$2(k, x, param[/* r */3]));
   } else {
     return singleton$2(k, x);
   }
@@ -2713,12 +2713,12 @@ function add_max_binding$2(k, x, param) {
 function join$2(l, v, d, r) {
   if (l) {
     if (r) {
-      var rh = r.h;
-      var lh = l.h;
+      var rh = r[/* h */4];
+      var lh = l[/* h */4];
       if (lh > (rh + 2 | 0)) {
-        return bal$2(l.l, l.v, l.d, join$2(l.r, v, d, r));
+        return bal$2(l[/* l */0], l[/* v */1], l[/* d */2], join$2(l[/* r */3], v, d, r));
       } else if (rh > (lh + 2 | 0)) {
-        return bal$2(join$2(l, v, d, r.l), r.v, r.d, r.r);
+        return bal$2(join$2(l, v, d, r[/* l */0]), r[/* v */1], r[/* d */2], r[/* r */3]);
       } else {
         return create$2(l, v, d, r);
       }
@@ -2753,10 +2753,10 @@ function concat_or_join$2(t1, v, d, t2) {
 
 function split$2(x, param) {
   if (param) {
-    var r = param.r;
-    var d = param.d;
-    var v = param.v;
-    var l = param.l;
+    var r = param[/* r */3];
+    var d = param[/* d */2];
+    var v = param[/* v */1];
+    var l = param[/* l */0];
     var c = Caml_primitive.caml_int_compare(x, v);
     if (c === 0) {
       return /* tuple */[
@@ -2790,19 +2790,19 @@ function split$2(x, param) {
 
 function merge$5(f, s1, s2) {
   if (s1) {
-    var v1 = s1.v;
-    if (s1.h >= height$2(s2)) {
+    var v1 = s1[/* v */1];
+    if (s1[/* h */4] >= height$2(s2)) {
       var match = split$2(v1, s2);
-      return concat_or_join$2(merge$5(f, s1.l, match[0]), v1, Curry._3(f, v1, Caml_option.some(s1.d), match[1]), merge$5(f, s1.r, match[2]));
+      return concat_or_join$2(merge$5(f, s1[/* l */0], match[0]), v1, Curry._3(f, v1, Caml_option.some(s1[/* d */2]), match[1]), merge$5(f, s1[/* r */3], match[2]));
     }
     
   } else if (!s2) {
     return /* Empty */0;
   }
   if (s2) {
-    var v2 = s2.v;
+    var v2 = s2[/* v */1];
     var match$1 = split$2(v2, s1);
-    return concat_or_join$2(merge$5(f, match$1[0], s2.l), v2, Curry._3(f, v2, match$1[1], Caml_option.some(s2.d)), merge$5(f, match$1[2], s2.r));
+    return concat_or_join$2(merge$5(f, match$1[0], s2[/* l */0]), v2, Curry._3(f, v2, match$1[1], Caml_option.some(s2[/* d */2])), merge$5(f, match$1[2], s2[/* r */3]));
   } else {
     throw [
           Caml_builtin_exceptions.assert_failure,
@@ -2818,15 +2818,15 @@ function merge$5(f, s1, s2) {
 function union$2(f, s1, s2) {
   if (s1) {
     if (s2) {
-      var d2 = s2.d;
-      var v2 = s2.v;
-      var d1 = s1.d;
-      var v1 = s1.v;
-      if (s1.h >= s2.h) {
+      var d2 = s2[/* d */2];
+      var v2 = s2[/* v */1];
+      var d1 = s1[/* d */2];
+      var v1 = s1[/* v */1];
+      if (s1[/* h */4] >= s2[/* h */4]) {
         var match = split$2(v1, s2);
         var d2$1 = match[1];
-        var l = union$2(f, s1.l, match[0]);
-        var r = union$2(f, s1.r, match[2]);
+        var l = union$2(f, s1[/* l */0], match[0]);
+        var r = union$2(f, s1[/* r */3], match[2]);
         if (d2$1 !== undefined) {
           return concat_or_join$2(l, v1, Curry._3(f, v1, d1, Caml_option.valFromOption(d2$1)), r);
         } else {
@@ -2835,8 +2835,8 @@ function union$2(f, s1, s2) {
       } else {
         var match$1 = split$2(v2, s1);
         var d1$1 = match$1[1];
-        var l$1 = union$2(f, match$1[0], s2.l);
-        var r$1 = union$2(f, match$1[2], s2.r);
+        var l$1 = union$2(f, match$1[0], s2[/* l */0]);
+        var r$1 = union$2(f, match$1[2], s2[/* r */3]);
         if (d1$1 !== undefined) {
           return concat_or_join$2(l$1, v2, Curry._3(f, v2, Caml_option.valFromOption(d1$1), d2), r$1);
         } else {
@@ -2853,10 +2853,10 @@ function union$2(f, s1, s2) {
 
 function filter$2(p, m) {
   if (m) {
-    var r = m.r;
-    var d = m.d;
-    var v = m.v;
-    var l = m.l;
+    var r = m[/* r */3];
+    var d = m[/* d */2];
+    var v = m[/* v */1];
+    var l = m[/* l */0];
     var l$prime = filter$2(p, l);
     var pvd = Curry._2(p, v, d);
     var r$prime = filter$2(p, r);
@@ -2876,13 +2876,13 @@ function filter$2(p, m) {
 
 function partition$2(p, param) {
   if (param) {
-    var d = param.d;
-    var v = param.v;
-    var match = partition$2(p, param.l);
+    var d = param[/* d */2];
+    var v = param[/* v */1];
+    var match = partition$2(p, param[/* l */0]);
     var lf = match[1];
     var lt = match[0];
     var pvd = Curry._2(p, v, d);
-    var match$1 = partition$2(p, param.r);
+    var match$1 = partition$2(p, param[/* r */3]);
     var rf = match$1[1];
     var rt = match$1[0];
     if (pvd) {
@@ -2910,12 +2910,12 @@ function cons_enum$2(_m, _e) {
     var m = _m;
     if (m) {
       _e = /* More */[
-        m.v,
-        m.d,
-        m.r,
+        m[/* v */1],
+        m[/* d */2],
+        m[/* r */3],
         e
       ];
-      _m = m.l;
+      _m = m[/* l */0];
       continue ;
     } else {
       return e;
@@ -2979,7 +2979,7 @@ function equal$2(cmp, m1, m2) {
 
 function cardinal$2(param) {
   if (param) {
-    return (cardinal$2(param.l) + 1 | 0) + cardinal$2(param.r) | 0;
+    return (cardinal$2(param[/* l */0]) + 1 | 0) + cardinal$2(param[/* r */3]) | 0;
   } else {
     return 0;
   }
@@ -2990,13 +2990,13 @@ function bindings_aux$2(_accu, _param) {
     var param = _param;
     var accu = _accu;
     if (param) {
-      _param = param.l;
+      _param = param[/* l */0];
       _accu = /* :: */[
         /* tuple */[
-          param.v,
-          param.d
+          param[/* v */1],
+          param[/* d */2]
         ],
-        bindings_aux$2(accu, param.r)
+        bindings_aux$2(accu, param[/* r */3])
       ];
       continue ;
     } else {
