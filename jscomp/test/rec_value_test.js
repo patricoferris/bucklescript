@@ -51,11 +51,16 @@ function naive(n) {
   }
 }
 
-var four = /* record */[/* contents */2];
+var four = /* record */{
+  contents: 2
+};
 
-var three = /* record */[/* contents */3];
+var three = /* record */{
+  contents: 3
+};
 
-var v = /* record */[/* contents */(function (param) {
+var v = /* record */{
+  contents: (function (param) {
       throw [
             Caml_builtin_exceptions.assert_failure,
             /* tuple */[
@@ -64,18 +69,19 @@ var v = /* record */[/* contents */(function (param) {
               24
             ]
           ];
-    })];
+    })
+};
 
 function fib(n) {
   switch (n) {
     case 0 :
-        return four[0];
+        return four.contents;
     case 1 :
         return 1;
     case 2 :
-        return three[0];
+        return three.contents;
     case 3 :
-        v[0] = CamlinternalLazy.force(fib);
+        v.contents = CamlinternalLazy.force(fib);
         return 1;
     default:
       return fib(n - 1 | 0) + fib(n - 2 | 0) | 0;

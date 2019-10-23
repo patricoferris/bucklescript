@@ -97,14 +97,14 @@ function string_of_rank(param) {
 
 function find_ticker_by_name(all_tickers, ticker) {
   return List.find((function (param) {
-                return param[/* ticker_name */2] === ticker;
+                return param.ticker_name === ticker;
               }), all_tickers);
 }
 
 function print_all_composite(all_tickers) {
   return List.iter((function (param) {
-                if (param[/* type_ */3]) {
-                  console.log(param[/* ticker_name */2]);
+                if (param.type_) {
+                  console.log(param.ticker_name);
                   return /* () */0;
                 } else {
                   return /* () */0;
@@ -114,7 +114,7 @@ function print_all_composite(all_tickers) {
 
 function height(param) {
   if (param) {
-    return param[/* h */4];
+    return param.h;
   } else {
     return 0;
   }
@@ -143,18 +143,18 @@ function singleton(x, d) {
 }
 
 function bal(l, x, d, r) {
-  var hl = l ? l[/* h */4] : 0;
-  var hr = r ? r[/* h */4] : 0;
+  var hl = l ? l.h : 0;
+  var hr = r ? r.h : 0;
   if (hl > (hr + 2 | 0)) {
     if (l) {
-      var lr = l[/* r */3];
-      var ld = l[/* d */2];
-      var lv = l[/* v */1];
-      var ll = l[/* l */0];
+      var lr = l.r;
+      var ld = l.d;
+      var lv = l.v;
+      var ll = l.l;
       if (height(ll) >= height(lr)) {
         return create(ll, lv, ld, create(lr, x, d, r));
       } else if (lr) {
-        return create(create(ll, lv, ld, lr[/* l */0]), lr[/* v */1], lr[/* d */2], create(lr[/* r */3], x, d, r));
+        return create(create(ll, lv, ld, lr.l), lr.v, lr.d, create(lr.r, x, d, r));
       } else {
         throw [
               Caml_builtin_exceptions.invalid_argument,
@@ -169,14 +169,14 @@ function bal(l, x, d, r) {
     }
   } else if (hr > (hl + 2 | 0)) {
     if (r) {
-      var rr = r[/* r */3];
-      var rd = r[/* d */2];
-      var rv = r[/* v */1];
-      var rl = r[/* l */0];
+      var rr = r.r;
+      var rd = r.d;
+      var rv = r.v;
+      var rl = r.l;
       if (height(rr) >= height(rl)) {
         return create(create(l, x, d, rl), rv, rd, rr);
       } else if (rl) {
-        return create(create(l, x, d, rl[/* l */0]), rl[/* v */1], rl[/* d */2], create(rl[/* r */3], rv, rd, rr));
+        return create(create(l, x, d, rl.l), rl.v, rl.d, create(rl.r, rv, rd, rr));
       } else {
         throw [
               Caml_builtin_exceptions.invalid_argument,
@@ -210,10 +210,10 @@ function is_empty(param) {
 
 function add(x, data, m) {
   if (m) {
-    var r = m[/* r */3];
-    var d = m[/* d */2];
-    var v = m[/* v */1];
-    var l = m[/* l */0];
+    var r = m.r;
+    var d = m.d;
+    var v = m.v;
+    var l = m.l;
     var c = Caml_obj.caml_compare(x, v);
     if (c === 0) {
       if (d === data) {
@@ -224,7 +224,7 @@ function add(x, data, m) {
                 /* v */x,
                 /* d */data,
                 /* r */r,
-                /* h */m[/* h */4]
+                /* h */m.h
               ];
       }
     } else if (c < 0) {
@@ -257,11 +257,11 @@ function find(x, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      var c = Caml_obj.caml_compare(x, param[/* v */1]);
+      var c = Caml_obj.caml_compare(x, param.v);
       if (c === 0) {
-        return param[/* d */2];
+        return param.d;
       } else {
-        _param = c < 0 ? param[/* l */0] : param[/* r */3];
+        _param = c < 0 ? param.l : param.r;
         continue ;
       }
     } else {
@@ -274,25 +274,25 @@ function find_first(f, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      var v = param[/* v */1];
+      var v = param.v;
       if (Curry._1(f, v)) {
         var _v0 = v;
-        var _d0 = param[/* d */2];
+        var _d0 = param.d;
         var f$1 = f;
-        var _param$1 = param[/* l */0];
+        var _param$1 = param.l;
         while(true) {
           var param$1 = _param$1;
           var d0 = _d0;
           var v0 = _v0;
           if (param$1) {
-            var v$1 = param$1[/* v */1];
+            var v$1 = param$1.v;
             if (Curry._1(f$1, v$1)) {
-              _param$1 = param$1[/* l */0];
-              _d0 = param$1[/* d */2];
+              _param$1 = param$1.l;
+              _d0 = param$1.d;
               _v0 = v$1;
               continue ;
             } else {
-              _param$1 = param$1[/* r */3];
+              _param$1 = param$1.r;
               continue ;
             }
           } else {
@@ -303,7 +303,7 @@ function find_first(f, _param) {
           }
         };
       } else {
-        _param = param[/* r */3];
+        _param = param.r;
         continue ;
       }
     } else {
@@ -316,25 +316,25 @@ function find_first_opt(f, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      var v = param[/* v */1];
+      var v = param.v;
       if (Curry._1(f, v)) {
         var _v0 = v;
-        var _d0 = param[/* d */2];
+        var _d0 = param.d;
         var f$1 = f;
-        var _param$1 = param[/* l */0];
+        var _param$1 = param.l;
         while(true) {
           var param$1 = _param$1;
           var d0 = _d0;
           var v0 = _v0;
           if (param$1) {
-            var v$1 = param$1[/* v */1];
+            var v$1 = param$1.v;
             if (Curry._1(f$1, v$1)) {
-              _param$1 = param$1[/* l */0];
-              _d0 = param$1[/* d */2];
+              _param$1 = param$1.l;
+              _d0 = param$1.d;
               _v0 = v$1;
               continue ;
             } else {
-              _param$1 = param$1[/* r */3];
+              _param$1 = param$1.r;
               continue ;
             }
           } else {
@@ -345,7 +345,7 @@ function find_first_opt(f, _param) {
           }
         };
       } else {
-        _param = param[/* r */3];
+        _param = param.r;
         continue ;
       }
     } else {
@@ -358,25 +358,25 @@ function find_last(f, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      var v = param[/* v */1];
+      var v = param.v;
       if (Curry._1(f, v)) {
         var _v0 = v;
-        var _d0 = param[/* d */2];
+        var _d0 = param.d;
         var f$1 = f;
-        var _param$1 = param[/* r */3];
+        var _param$1 = param.r;
         while(true) {
           var param$1 = _param$1;
           var d0 = _d0;
           var v0 = _v0;
           if (param$1) {
-            var v$1 = param$1[/* v */1];
+            var v$1 = param$1.v;
             if (Curry._1(f$1, v$1)) {
-              _param$1 = param$1[/* r */3];
-              _d0 = param$1[/* d */2];
+              _param$1 = param$1.r;
+              _d0 = param$1.d;
               _v0 = v$1;
               continue ;
             } else {
-              _param$1 = param$1[/* l */0];
+              _param$1 = param$1.l;
               continue ;
             }
           } else {
@@ -387,7 +387,7 @@ function find_last(f, _param) {
           }
         };
       } else {
-        _param = param[/* l */0];
+        _param = param.l;
         continue ;
       }
     } else {
@@ -400,25 +400,25 @@ function find_last_opt(f, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      var v = param[/* v */1];
+      var v = param.v;
       if (Curry._1(f, v)) {
         var _v0 = v;
-        var _d0 = param[/* d */2];
+        var _d0 = param.d;
         var f$1 = f;
-        var _param$1 = param[/* r */3];
+        var _param$1 = param.r;
         while(true) {
           var param$1 = _param$1;
           var d0 = _d0;
           var v0 = _v0;
           if (param$1) {
-            var v$1 = param$1[/* v */1];
+            var v$1 = param$1.v;
             if (Curry._1(f$1, v$1)) {
-              _param$1 = param$1[/* r */3];
-              _d0 = param$1[/* d */2];
+              _param$1 = param$1.r;
+              _d0 = param$1.d;
               _v0 = v$1;
               continue ;
             } else {
-              _param$1 = param$1[/* l */0];
+              _param$1 = param$1.l;
               continue ;
             }
           } else {
@@ -429,7 +429,7 @@ function find_last_opt(f, _param) {
           }
         };
       } else {
-        _param = param[/* l */0];
+        _param = param.l;
         continue ;
       }
     } else {
@@ -442,11 +442,11 @@ function find_opt(x, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      var c = Caml_obj.caml_compare(x, param[/* v */1]);
+      var c = Caml_obj.caml_compare(x, param.v);
       if (c === 0) {
-        return Caml_option.some(param[/* d */2]);
+        return Caml_option.some(param.d);
       } else {
-        _param = c < 0 ? param[/* l */0] : param[/* r */3];
+        _param = c < 0 ? param.l : param.r;
         continue ;
       }
     } else {
@@ -459,11 +459,11 @@ function mem(x, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      var c = Caml_obj.caml_compare(x, param[/* v */1]);
+      var c = Caml_obj.caml_compare(x, param.v);
       if (c === 0) {
         return true;
       } else {
-        _param = c < 0 ? param[/* l */0] : param[/* r */3];
+        _param = c < 0 ? param.l : param.r;
         continue ;
       }
     } else {
@@ -476,14 +476,14 @@ function min_binding(_param) {
   while(true) {
     var param = _param;
     if (param) {
-      var l = param[/* l */0];
+      var l = param.l;
       if (l) {
         _param = l;
         continue ;
       } else {
         return /* tuple */[
-                param[/* v */1],
-                param[/* d */2]
+                param.v,
+                param.d
               ];
       }
     } else {
@@ -496,14 +496,14 @@ function min_binding_opt(_param) {
   while(true) {
     var param = _param;
     if (param) {
-      var l = param[/* l */0];
+      var l = param.l;
       if (l) {
         _param = l;
         continue ;
       } else {
         return /* tuple */[
-                param[/* v */1],
-                param[/* d */2]
+                param.v,
+                param.d
               ];
       }
     } else {
@@ -516,14 +516,14 @@ function max_binding(_param) {
   while(true) {
     var param = _param;
     if (param) {
-      var r = param[/* r */3];
+      var r = param.r;
       if (r) {
         _param = r;
         continue ;
       } else {
         return /* tuple */[
-                param[/* v */1],
-                param[/* d */2]
+                param.v,
+                param.d
               ];
       }
     } else {
@@ -536,14 +536,14 @@ function max_binding_opt(_param) {
   while(true) {
     var param = _param;
     if (param) {
-      var r = param[/* r */3];
+      var r = param.r;
       if (r) {
         _param = r;
         continue ;
       } else {
         return /* tuple */[
-                param[/* v */1],
-                param[/* d */2]
+                param.v,
+                param.d
               ];
       }
     } else {
@@ -554,11 +554,11 @@ function max_binding_opt(_param) {
 
 function remove_min_binding(param) {
   if (param) {
-    var l = param[/* l */0];
+    var l = param.l;
     if (l) {
-      return bal(remove_min_binding(l), param[/* v */1], param[/* d */2], param[/* r */3]);
+      return bal(remove_min_binding(l), param.v, param.d, param.r);
     } else {
-      return param[/* r */3];
+      return param.r;
     }
   } else {
     throw [
@@ -583,10 +583,10 @@ function merge(t1, t2) {
 
 function remove(x, m) {
   if (m) {
-    var r = m[/* r */3];
-    var d = m[/* d */2];
-    var v = m[/* v */1];
-    var l = m[/* l */0];
+    var r = m.r;
+    var d = m.d;
+    var v = m.v;
+    var l = m.l;
     var c = Caml_obj.caml_compare(x, v);
     if (c === 0) {
       return merge(l, r);
@@ -612,10 +612,10 @@ function remove(x, m) {
 
 function update(x, f, m) {
   if (m) {
-    var r = m[/* r */3];
-    var d = m[/* d */2];
-    var v = m[/* v */1];
-    var l = m[/* l */0];
+    var r = m.r;
+    var d = m.d;
+    var v = m.v;
+    var l = m.l;
     var c = Caml_obj.caml_compare(x, v);
     if (c === 0) {
       var match = Curry._1(f, Caml_option.some(d));
@@ -629,7 +629,7 @@ function update(x, f, m) {
                   /* v */x,
                   /* d */data,
                   /* r */r,
-                  /* h */m[/* h */4]
+                  /* h */m.h
                 ];
         }
       } else {
@@ -670,9 +670,9 @@ function iter(f, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      iter(f, param[/* l */0]);
-      Curry._2(f, param[/* v */1], param[/* d */2]);
-      _param = param[/* r */3];
+      iter(f, param.l);
+      Curry._2(f, param.v, param.d);
+      _param = param.r;
       continue ;
     } else {
       return /* () */0;
@@ -682,15 +682,15 @@ function iter(f, _param) {
 
 function map(f, param) {
   if (param) {
-    var l$prime = map(f, param[/* l */0]);
-    var d$prime = Curry._1(f, param[/* d */2]);
-    var r$prime = map(f, param[/* r */3]);
+    var l$prime = map(f, param.l);
+    var d$prime = Curry._1(f, param.d);
+    var r$prime = map(f, param.r);
     return /* Node */[
             /* l */l$prime,
-            /* v */param[/* v */1],
+            /* v */param.v,
             /* d */d$prime,
             /* r */r$prime,
-            /* h */param[/* h */4]
+            /* h */param.h
           ];
   } else {
     return /* Empty */0;
@@ -699,16 +699,16 @@ function map(f, param) {
 
 function mapi(f, param) {
   if (param) {
-    var v = param[/* v */1];
-    var l$prime = mapi(f, param[/* l */0]);
-    var d$prime = Curry._2(f, v, param[/* d */2]);
-    var r$prime = mapi(f, param[/* r */3]);
+    var v = param.v;
+    var l$prime = mapi(f, param.l);
+    var d$prime = Curry._2(f, v, param.d);
+    var r$prime = mapi(f, param.r);
     return /* Node */[
             /* l */l$prime,
             /* v */v,
             /* d */d$prime,
             /* r */r$prime,
-            /* h */param[/* h */4]
+            /* h */param.h
           ];
   } else {
     return /* Empty */0;
@@ -720,8 +720,8 @@ function fold(f, _m, _accu) {
     var accu = _accu;
     var m = _m;
     if (m) {
-      _accu = Curry._3(f, m[/* v */1], m[/* d */2], fold(f, m[/* l */0], accu));
-      _m = m[/* r */3];
+      _accu = Curry._3(f, m.v, m.d, fold(f, m.l, accu));
+      _m = m.r;
       continue ;
     } else {
       return accu;
@@ -733,8 +733,8 @@ function for_all(p, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      if (Curry._2(p, param[/* v */1], param[/* d */2]) && for_all(p, param[/* l */0])) {
-        _param = param[/* r */3];
+      if (Curry._2(p, param.v, param.d) && for_all(p, param.l)) {
+        _param = param.r;
         continue ;
       } else {
         return false;
@@ -749,10 +749,10 @@ function exists(p, _param) {
   while(true) {
     var param = _param;
     if (param) {
-      if (Curry._2(p, param[/* v */1], param[/* d */2]) || exists(p, param[/* l */0])) {
+      if (Curry._2(p, param.v, param.d) || exists(p, param.l)) {
         return true;
       } else {
-        _param = param[/* r */3];
+        _param = param.r;
         continue ;
       }
     } else {
@@ -763,7 +763,7 @@ function exists(p, _param) {
 
 function add_min_binding(k, x, param) {
   if (param) {
-    return bal(add_min_binding(k, x, param[/* l */0]), param[/* v */1], param[/* d */2], param[/* r */3]);
+    return bal(add_min_binding(k, x, param.l), param.v, param.d, param.r);
   } else {
     return singleton(k, x);
   }
@@ -771,7 +771,7 @@ function add_min_binding(k, x, param) {
 
 function add_max_binding(k, x, param) {
   if (param) {
-    return bal(param[/* l */0], param[/* v */1], param[/* d */2], add_max_binding(k, x, param[/* r */3]));
+    return bal(param.l, param.v, param.d, add_max_binding(k, x, param.r));
   } else {
     return singleton(k, x);
   }
@@ -780,12 +780,12 @@ function add_max_binding(k, x, param) {
 function join(l, v, d, r) {
   if (l) {
     if (r) {
-      var rh = r[/* h */4];
-      var lh = l[/* h */4];
+      var rh = r.h;
+      var lh = l.h;
       if (lh > (rh + 2 | 0)) {
-        return bal(l[/* l */0], l[/* v */1], l[/* d */2], join(l[/* r */3], v, d, r));
+        return bal(l.l, l.v, l.d, join(l.r, v, d, r));
       } else if (rh > (lh + 2 | 0)) {
-        return bal(join(l, v, d, r[/* l */0]), r[/* v */1], r[/* d */2], r[/* r */3]);
+        return bal(join(l, v, d, r.l), r.v, r.d, r.r);
       } else {
         return create(l, v, d, r);
       }
@@ -820,10 +820,10 @@ function concat_or_join(t1, v, d, t2) {
 
 function split$1(x, param) {
   if (param) {
-    var r = param[/* r */3];
-    var d = param[/* d */2];
-    var v = param[/* v */1];
-    var l = param[/* l */0];
+    var r = param.r;
+    var d = param.d;
+    var v = param.v;
+    var l = param.l;
     var c = Caml_obj.caml_compare(x, v);
     if (c === 0) {
       return /* tuple */[
@@ -857,19 +857,19 @@ function split$1(x, param) {
 
 function merge$1(f, s1, s2) {
   if (s1) {
-    var v1 = s1[/* v */1];
-    if (s1[/* h */4] >= height(s2)) {
+    var v1 = s1.v;
+    if (s1.h >= height(s2)) {
       var match = split$1(v1, s2);
-      return concat_or_join(merge$1(f, s1[/* l */0], match[0]), v1, Curry._3(f, v1, Caml_option.some(s1[/* d */2]), match[1]), merge$1(f, s1[/* r */3], match[2]));
+      return concat_or_join(merge$1(f, s1.l, match[0]), v1, Curry._3(f, v1, Caml_option.some(s1.d), match[1]), merge$1(f, s1.r, match[2]));
     }
     
   } else if (!s2) {
     return /* Empty */0;
   }
   if (s2) {
-    var v2 = s2[/* v */1];
+    var v2 = s2.v;
     var match$1 = split$1(v2, s1);
-    return concat_or_join(merge$1(f, match$1[0], s2[/* l */0]), v2, Curry._3(f, v2, match$1[1], Caml_option.some(s2[/* d */2])), merge$1(f, match$1[2], s2[/* r */3]));
+    return concat_or_join(merge$1(f, match$1[0], s2.l), v2, Curry._3(f, v2, match$1[1], Caml_option.some(s2.d)), merge$1(f, match$1[2], s2.r));
   } else {
     throw [
           Caml_builtin_exceptions.assert_failure,
@@ -885,15 +885,15 @@ function merge$1(f, s1, s2) {
 function union(f, s1, s2) {
   if (s1) {
     if (s2) {
-      var d2 = s2[/* d */2];
-      var v2 = s2[/* v */1];
-      var d1 = s1[/* d */2];
-      var v1 = s1[/* v */1];
-      if (s1[/* h */4] >= s2[/* h */4]) {
+      var d2 = s2.d;
+      var v2 = s2.v;
+      var d1 = s1.d;
+      var v1 = s1.v;
+      if (s1.h >= s2.h) {
         var match = split$1(v1, s2);
         var d2$1 = match[1];
-        var l = union(f, s1[/* l */0], match[0]);
-        var r = union(f, s1[/* r */3], match[2]);
+        var l = union(f, s1.l, match[0]);
+        var r = union(f, s1.r, match[2]);
         if (d2$1 !== undefined) {
           return concat_or_join(l, v1, Curry._3(f, v1, d1, Caml_option.valFromOption(d2$1)), r);
         } else {
@@ -902,8 +902,8 @@ function union(f, s1, s2) {
       } else {
         var match$1 = split$1(v2, s1);
         var d1$1 = match$1[1];
-        var l$1 = union(f, match$1[0], s2[/* l */0]);
-        var r$1 = union(f, match$1[2], s2[/* r */3]);
+        var l$1 = union(f, match$1[0], s2.l);
+        var r$1 = union(f, match$1[2], s2.r);
         if (d1$1 !== undefined) {
           return concat_or_join(l$1, v2, Curry._3(f, v2, Caml_option.valFromOption(d1$1), d2), r$1);
         } else {
@@ -920,10 +920,10 @@ function union(f, s1, s2) {
 
 function filter(p, m) {
   if (m) {
-    var r = m[/* r */3];
-    var d = m[/* d */2];
-    var v = m[/* v */1];
-    var l = m[/* l */0];
+    var r = m.r;
+    var d = m.d;
+    var v = m.v;
+    var l = m.l;
     var l$prime = filter(p, l);
     var pvd = Curry._2(p, v, d);
     var r$prime = filter(p, r);
@@ -943,13 +943,13 @@ function filter(p, m) {
 
 function partition(p, param) {
   if (param) {
-    var d = param[/* d */2];
-    var v = param[/* v */1];
-    var match = partition(p, param[/* l */0]);
+    var d = param.d;
+    var v = param.v;
+    var match = partition(p, param.l);
     var lf = match[1];
     var lt = match[0];
     var pvd = Curry._2(p, v, d);
-    var match$1 = partition(p, param[/* r */3]);
+    var match$1 = partition(p, param.r);
     var rf = match$1[1];
     var rt = match$1[0];
     if (pvd) {
@@ -977,12 +977,12 @@ function cons_enum(_m, _e) {
     var m = _m;
     if (m) {
       _e = /* More */[
-        m[/* v */1],
-        m[/* d */2],
-        m[/* r */3],
+        m.v,
+        m.d,
+        m.r,
         e
       ];
-      _m = m[/* l */0];
+      _m = m.l;
       continue ;
     } else {
       return e;
@@ -1046,7 +1046,7 @@ function equal(cmp, m1, m2) {
 
 function cardinal(param) {
   if (param) {
-    return (cardinal(param[/* l */0]) + 1 | 0) + cardinal(param[/* r */3]) | 0;
+    return (cardinal(param.l) + 1 | 0) + cardinal(param.r) | 0;
   } else {
     return 0;
   }
@@ -1057,13 +1057,13 @@ function bindings_aux(_accu, _param) {
     var param = _param;
     var accu = _accu;
     if (param) {
-      _param = param[/* l */0];
+      _param = param.l;
       _accu = /* :: */[
         /* tuple */[
-          param[/* v */1],
-          param[/* d */2]
+          param.v,
+          param.d
         ],
-        bindings_aux(accu, param[/* r */3])
+        bindings_aux(accu, param.r)
       ];
       continue ;
     } else {
@@ -1116,20 +1116,20 @@ var Ticker_map = {
 function compute_update_sequences(all_tickers) {
   List.fold_left((function (counter, ticker) {
           var loop = function (counter, ticker) {
-            var rank = ticker[/* rank */1];
+            var rank = ticker.rank;
             if (typeof rank === "number" && rank === 0) {
-              ticker[/* rank */1] = /* Visited */1;
-              var match = ticker[/* type_ */3];
+              ticker.rank = /* Visited */1;
+              var match = ticker.type_;
               if (match) {
                 var match$1 = match[0];
-                var counter$1 = loop(counter, match$1[/* lhs */2]);
-                var counter$2 = loop(counter$1, match$1[/* rhs */1]);
+                var counter$1 = loop(counter, match$1.lhs);
+                var counter$2 = loop(counter$1, match$1.rhs);
                 var counter$3 = counter$2 + 1 | 0;
-                ticker[/* rank */1] = /* Ranked */[counter$3];
+                ticker.rank = /* Ranked */[counter$3];
                 return counter$3;
               } else {
                 var counter$4 = counter + 1 | 0;
-                ticker[/* rank */1] = /* Ranked */[counter$4];
+                ticker.rank = /* Ranked */[counter$4];
                 return counter$4;
               }
             } else {
@@ -1139,21 +1139,21 @@ function compute_update_sequences(all_tickers) {
           return loop(counter, ticker);
         }), 0, all_tickers);
   var map = List.fold_left((function (map, ticker) {
-          if (ticker[/* type_ */3]) {
+          if (ticker.type_) {
             var loop = function (_up, _map, _ticker) {
               while(true) {
                 var ticker = _ticker;
                 var map = _map;
                 var up = _up;
-                var type_ = ticker[/* type_ */3];
-                var ticker_name = ticker[/* ticker_name */2];
+                var type_ = ticker.type_;
+                var ticker_name = ticker.ticker_name;
                 if (type_) {
                   var match = type_[0];
                   var map$1 = loop(/* :: */[
                         ticker,
                         up
-                      ], map, match[/* lhs */2]);
-                  _ticker = match[/* rhs */1];
+                      ], map, match.lhs);
+                  _ticker = match.rhs;
                   _map = map$1;
                   _up = /* :: */[
                     ticker,
@@ -1168,7 +1168,7 @@ function compute_update_sequences(all_tickers) {
             };
             return loop(/* [] */0, map, ticker);
           } else {
-            return add(ticker[/* ticker_name */2], /* :: */[
+            return add(ticker.ticker_name, /* :: */[
                         ticker,
                         /* [] */0
                       ], map);
@@ -1176,14 +1176,14 @@ function compute_update_sequences(all_tickers) {
         }), /* Empty */0, List.rev(all_tickers));
   return fold((function (k, l, map) {
                 var l$1 = List.sort_uniq((function (lhs, rhs) {
-                        var match = lhs[/* rank */1];
+                        var match = lhs.rank;
                         if (typeof match === "number") {
                           throw [
                                 Caml_builtin_exceptions.failure,
                                 "All nodes should be ranked"
                               ];
                         }
-                        var match$1 = rhs[/* rank */1];
+                        var match$1 = rhs.rank;
                         if (typeof match$1 === "number") {
                           throw [
                                 Caml_builtin_exceptions.failure,
@@ -1199,23 +1199,23 @@ function compute_update_sequences(all_tickers) {
 function process_quote(ticker_map, new_ticker, new_value) {
   var update_sequence = find(new_ticker, ticker_map);
   return List.iter((function (ticker) {
-                var match = ticker[/* type_ */3];
+                var match = ticker.type_;
                 if (match) {
                   var match$1 = match[0];
-                  var match$2 = match$1[/* lhs */2][/* value */0];
-                  var match$3 = match$1[/* rhs */1][/* value */0];
+                  var match$2 = match$1.lhs.value;
+                  var match$3 = match$1.rhs.value;
                   var value;
                   if (match$2 !== undefined && match$3 !== undefined) {
                     var y = match$3;
                     var x = match$2;
-                    value = match$1[/* op */0] ? x - y : x + y;
+                    value = match$1.op ? x - y : x + y;
                   } else {
                     value = undefined;
                   }
-                  ticker[/* value */0] = value;
+                  ticker.value = value;
                   return /* () */0;
-                } else if (ticker[/* ticker_name */2] === new_ticker) {
-                  ticker[/* value */0] = new_value;
+                } else if (ticker.ticker_name === new_ticker) {
+                  ticker.value = new_value;
                   return /* () */0;
                 } else {
                   throw [
@@ -1230,16 +1230,16 @@ function process_input_line(ticker_map, all_tickers, line) {
   var make_binary_op = function (ticker_name, lhs, rhs, op) {
     var lhs$1 = find_ticker_by_name(all_tickers, lhs);
     var rhs$1 = find_ticker_by_name(all_tickers, rhs);
-    return /* record */[
-            /* value */undefined,
-            /* rank : Uninitialized */0,
-            /* ticker_name */ticker_name,
-            /* type_ : Binary_op */[/* record */[
-                /* op */op,
-                /* rhs */rhs$1,
-                /* lhs */lhs$1
-              ]]
-          ];
+    return /* record */{
+            value: undefined,
+            rank: /* Uninitialized */0,
+            ticker_name: ticker_name,
+            type_: /* Binary_op */[/* record */{
+                op: op,
+                rhs: rhs$1,
+                lhs: lhs$1
+              }]
+          };
   };
   var tokens = split(/* "|" */124, line);
   if (tokens) {
@@ -1350,12 +1350,12 @@ function process_input_line(ticker_map, all_tickers, line) {
                     }
                     return /* tuple */[
                             /* :: */[
-                              /* record */[
-                                /* value */undefined,
-                                /* rank : Uninitialized */0,
-                                /* ticker_name */ticker_name,
-                                /* type_ : Market */0
-                              ],
+                              /* record */{
+                                value: undefined,
+                                rank: /* Uninitialized */0,
+                                ticker_name: ticker_name,
+                                type_: /* Market */0
+                              },
                               all_tickers
                             ],
                             ticker_map

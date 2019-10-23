@@ -7,18 +7,19 @@ var Queue = require("../../lib/js/queue.js");
 var Genlex = require("../../lib/js/genlex.js");
 var Stream = require("../../lib/js/stream.js");
 var Caml_int32 = require("../../lib/js/caml_int32.js");
+var Pervasives = require("../../lib/js/pervasives.js");
 var Caml_exceptions = require("../../lib/js/caml_exceptions.js");
 
 var Parse_error = Caml_exceptions.create("Stream_parser_test.Parse_error");
 
 function parse(token) {
-  var look_ahead = /* record */[
-    /* length */0,
-    /* first : Nil */0,
-    /* last : Nil */0
-  ];
+  var look_ahead = /* record */{
+    length: 0,
+    first: /* Nil */0,
+    last: /* Nil */0
+  };
   var token$1 = function (param) {
-    if (look_ahead[/* length */0] === 0) {
+    if (look_ahead.length === 0) {
       try {
         return Curry._1(token, /* () */0);
       }
@@ -140,13 +141,13 @@ function token(chars) {
 }
 
 function l_parse(token) {
-  var look_ahead = /* record */[
-    /* length */0,
-    /* first : Nil */0,
-    /* last : Nil */0
-  ];
+  var look_ahead = /* record */{
+    length: 0,
+    first: /* Nil */0,
+    last: /* Nil */0
+  };
   var token$1 = function (param) {
-    if (look_ahead[/* length */0] === 0) {
+    if (look_ahead.length === 0) {
       try {
         return Curry._1(token, /* () */0);
       }
@@ -248,15 +249,19 @@ function l_parse(token) {
         ];
 }
 
-var suites = /* record */[/* contents : [] */0];
+var suites = /* record */{
+  contents: /* [] */0
+};
 
-var test_id = /* record */[/* contents */0];
+var test_id = /* record */{
+  contents: 0
+};
 
 function eq(loc, x, y) {
-  test_id[0] = test_id[0] + 1 | 0;
-  suites[0] = /* :: */[
+  Pervasives.incr(test_id);
+  suites.contents = /* :: */[
     /* tuple */[
-      loc + (" id " + String(test_id[0])),
+      loc + (" id " + String(test_id.contents)),
       (function (param) {
           return /* Eq */Block.__(0, [
                     x,
@@ -264,7 +269,7 @@ function eq(loc, x, y) {
                   ]);
         })
     ],
-    suites[0]
+    suites.contents
   ];
   return /* () */0;
 }
@@ -298,7 +303,7 @@ eq("File \"stream_parser_test.ml\", line 134, characters 5-12", /* tuple */[
       ]
     ], l_parse(token(Stream.of_string("3 - 2  - 1"))));
 
-Mt.from_pair_suites("Stream_parser_test", suites[0]);
+Mt.from_pair_suites("Stream_parser_test", suites.contents);
 
 exports.Parse_error = Parse_error;
 exports.parse = parse;

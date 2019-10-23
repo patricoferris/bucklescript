@@ -6,9 +6,13 @@ var Block = require("../../lib/js/block.js");
 var Caml_exceptions = require("../../lib/js/caml_exceptions.js");
 var Caml_builtin_exceptions = require("../../lib/js/caml_builtin_exceptions.js");
 
-var suites = /* record */[/* contents : [] */0];
+var suites = /* record */{
+  contents: /* [] */0
+};
 
-var test_id = /* record */[/* contents */0];
+var test_id = /* record */{
+  contents: 0
+};
 
 function eq(loc, x, y) {
   return Mt.eq_suites(test_id, suites, loc, x, y);
@@ -31,11 +35,11 @@ function f(x) {
   if (x.tag) {
     return List.fold_left((function (prim, prim$1) {
                   return prim + prim$1 | 0;
-                }), 0, x[/* more */0]);
+                }), 0, x.more);
   } else {
     return List.fold_left((function (prim, prim$1) {
                   return prim + prim$1 | 0;
-                }), x[/* lbl */0], x[/* more */1]);
+                }), x.lbl, x.more);
   }
 }
 
@@ -74,10 +78,10 @@ eq("File \"inline_record_test.ml\", line 51, characters 6-13", tmp, 3);
 
 function ff(x) {
   if (x.tag) {
-    x[/* z */0] = x[/* z */0] + 2 | 0;
+    x.z = x.z + 2 | 0;
     return /* () */0;
   } else {
-    x[/* x */0] = x[/* x */0] + 1 | 0;
+    x.x = x.x + 1 | 0;
     return /* () */0;
   }
 }
@@ -107,7 +111,7 @@ if (v4.tag) {
         ]
       ];
 } else {
-  tmp$1 = v4[/* x */0];
+  tmp$1 = v4.x;
 }
 
 eq("File \"inline_record_test.ml\", line 69, characters 6-13", tmp$1, 11);
@@ -115,7 +119,7 @@ eq("File \"inline_record_test.ml\", line 69, characters 6-13", tmp$1, 11);
 var tmp$2;
 
 if (v5.tag) {
-  tmp$2 = v5[/* z */0];
+  tmp$2 = v5.z;
 } else {
   throw [
         Caml_builtin_exceptions.assert_failure,
@@ -140,8 +144,8 @@ var v6 = [
 
 function ff0(x) {
   if (x[0] === A4) {
-    x[/* x */1] = x[/* x */1] + 1 | 0;
-    x[/* z */3] = x[/* z */3] + 1 | 0;
+    x.x = x.x + 1 | 0;
+    x.z = x.z + 1 | 0;
     return /* () */0;
   } else {
     return /* () */0;
@@ -155,7 +159,7 @@ for(var i$1 = 0; i$1 <= 10; ++i$1){
 var tmp$3;
 
 if (v6[0] === A4) {
-  tmp$3 = v6[/* x */1];
+  tmp$3 = v6.x;
 } else {
   throw [
         Caml_builtin_exceptions.assert_failure,
@@ -172,15 +176,15 @@ eq("File \"inline_record_test.ml\", line 87, characters 6-13", tmp$3, 11);
 function ff1(x) {
   if (x) {
     return /* A0 */[
-            /* lbl */x[/* lbl */0] + 1 | 0,
-            /* more */x[/* more */1]
+            /* lbl */x.lbl + 1 | 0,
+            /* more */x.more
           ];
   } else {
     return /* A1 */0;
   }
 }
 
-Mt.from_pair_suites("Inline_record_test", suites[0]);
+Mt.from_pair_suites("Inline_record_test", suites.contents);
 
 var v2 = /* A0 */[
   /* lbl */3,

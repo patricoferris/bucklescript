@@ -7,7 +7,7 @@ var Queue = require("../../lib/js/queue.js");
 var Caml_array = require("../../lib/js/caml_array.js");
 
 function to_array(q) {
-  var v = Caml_array.caml_make_vect(q[/* length */0], 0);
+  var v = Caml_array.caml_make_vect(q.length, 0);
   Queue.fold((function (i, e) {
           Caml_array.caml_array_set(v, i, e);
           return i + 1 | 0;
@@ -16,11 +16,11 @@ function to_array(q) {
 }
 
 function queue_1(x) {
-  var q = /* record */[
-    /* length */0,
-    /* first : Nil */0,
-    /* last : Nil */0
-  ];
+  var q = /* record */{
+    length: 0,
+    first: /* Nil */0,
+    last: /* Nil */0
+  };
   $$Array.iter((function (x) {
           return Queue.add(x, q);
         }), x);
